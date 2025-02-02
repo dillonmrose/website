@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
@@ -17,11 +17,25 @@ export default function RootLayout({
     <ViewTransitions>
       <html lang="en" className={`${GeistSans.variable}`}>
         <body>
+          <TopNav /> 
           {children}
           <Footer />
         </body>
       </html>
     </ViewTransitions>
+  );
+}
+
+function TopNav() {
+  return (
+    <nav className="flex justify-between items-center p-4">
+      <div className="text-2xl font-bold">Dillon Rose</div>
+      <div className="flex space-x-4">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/projects">Projects</a>
+      </div>
+    </nav>
   );
 }
 

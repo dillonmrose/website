@@ -1,5 +1,4 @@
-# FaZaar
-
+# My Website
 
 ## pnpm
   pnpm run dev -> Starts the development server.
@@ -7,11 +6,12 @@
   pnpm start -> Runs the built app in production mode.
 
 ## Docker
-  docker build -t fazaar .
-  docker run -p 3000:3000 fazaar
+  docker build -t website .
+  docker run -p 3000:3000 website
 
 ## Todo
 - [X] Make it deploy
+- [ ] Set up blog and book reviews
 - [ ] Scaffold basic ui with mock data
 - [ ] Make things pretty https://www.youtube.com/watch?v=34bRv6cQezo
 - [ ] Set up a DB
