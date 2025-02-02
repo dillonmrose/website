@@ -34,21 +34,12 @@ export default function RootLayout({
     <ViewTransitions>
       <ClerkProvider>
       <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <div>
-            Hello world!
-          </div>
-          <div className="flex items-center">
-            <TopNav /> 
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </div>
-          {children}
-          <Footer />
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}>
+          <main className="flex flex-col h-full">
+            <TopNav />
+            {children}
+            <Footer />
+          </main>
         </body>
       </html>
       </ClerkProvider>
@@ -58,8 +49,14 @@ export default function RootLayout({
 
 function TopNav() {
   return (
-    <nav className="flex justify-between items-center p-20">
-      <div className="text-2xl font-bold">Dillon Rose</div>
+    <nav className="flex justify-between items-center">
+      <div className="text-2xl font-bold">Top Nav</div>
+      <SignedOut>
+        <SignInButton />
+      </SignedOut>
+      <SignedIn>
+        <UserButton />
+      </SignedIn>
     </nav>
   );
 }
