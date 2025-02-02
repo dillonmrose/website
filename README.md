@@ -13,6 +13,7 @@
 - [X] Make it deploy
 - [X] Set up blog and book reviews
 - [ ] Scaffold basic ui with mock data
+- [ ] Make it pretty https://ui.shadcn.com/docs/components/checkbox
 - [ ] Set up a DB https://orm.drizzle.team/docs/tutorials/drizzle-with-supabase
 - [ ] Set up  a VDB https://orm.drizzle.team/docs/guides/vector-similarity-search
 - [ ] Add auth Clerk
