@@ -11,9 +11,8 @@
 
 ## Todo
 - [X] Make it deploy
-- [ ] Set up blog and book reviews
+- [X] Set up blog and book reviews
 - [ ] Scaffold basic ui with mock data
-- [ ] Make things pretty https://www.youtube.com/watch?v=34bRv6cQezo
 - [ ] Set up a DB
 - [ ] Add auth
 - [ ] Error management
@@ -21,6 +20,7 @@
 - [ ] Upload functions
 - [ ] Cluster functions
 - [ ] Hook up to LLM
+- [ ] Make things pretty https://www.youtube.com/watch?v=34bRv6cQezo
 - [ ] Add image and file upload
 - [ ] Session history
 - [ ] Rate limiting
