@@ -1,7 +1,7 @@
 export default function Page() {
   return (
-    <main className="text-3xl font-bold">
-      Test
-    </main>
+    <div className="text-3xl font-bold underline">
+      Test as
+    </div>
   );
 }

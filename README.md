@@ -5,10 +5,6 @@
   pnpm run build -> Builds the app for production.
   pnpm start -> Runs the built app in production mode.
 
-## Docker
-  docker build -t website .
-  docker run -p 3000:3000 website
-
 ## Todo
 - [X] Make it deploy - Vercel
 - [X] Set up blog and book reviews
@@ -26,6 +22,9 @@
 - [ ] Make things pretty - https://www.youtube.com/watch?v=34bRv6cQezo
 - [ ] Add image and file upload - UploadThing
 - [ ] Analytics - PostHog
+
+### tailwind?
+npx tailwindcss -i .\styles\globals.css -o .\styles\output.css
 
 ## Blog
 

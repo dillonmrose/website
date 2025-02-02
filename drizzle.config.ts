@@ -2,11 +2,7 @@ import { type Config } from "drizzle-kit";
 
 require('dotenv').config();
 
-const databaseUrl = process.env.DATABASE_URL;
-
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL environment variable is not set.");
-}
+const databaseUrl = process.env.DATABASE_URL!;
 
 export default {
   schema: "./server/db/schema.ts",

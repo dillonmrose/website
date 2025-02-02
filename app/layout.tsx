@@ -1,4 +1,5 @@
-import "~/styles/globals.css";
+import "./globals.css";
+import { Geist, Geist_Mono } from "next/font/google";
 
 import {
   ClerkProvider,
@@ -7,9 +8,18 @@ import {
   SignedOut,
   UserButton
 } from '@clerk/nextjs'
-import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { ViewTransitions } from "next-view-transitions";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Dillon Rose",
@@ -23,15 +33,20 @@ export default function RootLayout({
   return (
     <ViewTransitions>
       <ClerkProvider>
-      <html lang="en" className={`${GeistSans.variable}`}>
-        <body>
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-          <TopNav /> 
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <div>
+            Hello world!
+          </div>
+          <div className="flex items-center">
+            <TopNav /> 
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
           {children}
           <Footer />
         </body>
@@ -43,7 +58,7 @@ export default function RootLayout({
 
 function TopNav() {
   return (
-    <nav className="flex justify-between items-center p-4">
+    <nav className="flex justify-between items-center p-20">
       <div className="text-2xl font-bold">Dillon Rose</div>
     </nav>
   );
