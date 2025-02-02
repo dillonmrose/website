@@ -13,11 +13,11 @@
 - [X] Make it deploy
 - [X] Set up blog and book reviews
 - [ ] Scaffold basic ui with mock data
-- [ ] Set up a DB
-- [ ] Add auth
-- [ ] Error management
-- [ ] Set up  a VDB
-- [ ] Upload functions
+- [ ] Set up a DB https://orm.drizzle.team/docs/tutorials/drizzle-with-supabase
+- [ ] Set up  a VDB https://orm.drizzle.team/docs/guides/vector-similarity-search
+- [ ] Add auth Clerk
+- [ ] Error management 
+- [ ] Upload functions 
 - [ ] Cluster functions
 - [ ] Hook up to LLM
 - [ ] Make things pretty https://www.youtube.com/watch?v=34bRv6cQezo
