@@ -40,6 +40,7 @@ export const functions_vdb = pgTable(
   'functions_vdb',
   {
     id: serial('id').primaryKey(),
+    function_id: serial('function_id').notNull().references(() => functions.id),
     embedding: vector('embedding', { dimensions: 1536 }),
   },
   (table) => ({

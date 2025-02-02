@@ -8,7 +8,7 @@ export const getPosts = (directoryName: string) => {
 
   try {
     const files = fs.readdirSync(directoryPath, { recursive: true, withFileTypes: true, });
-    var posts = files.filter((file) => file.isDirectory()).map((file) => file.name);
+    const posts = files.filter((file) => file.isDirectory()).map((file) => file.name);
     return posts.map((post)=> {
       return {
         name : post.replace('_', ' '),
@@ -31,7 +31,7 @@ export const Posts: React.FC<PostsProps> = ({ directoryName }) => {
   return (
     <div>
       <h1 className="font-medium pt-12 transition-element">
-        {posts.map((post)=> <div><Link id={post.name} href={post.path}>{post.name}</Link><br /></div>)}
+        {posts.map((post)=> <div key={post.name}><Link id={post.name} href={post.path}>{post.name}</Link><br /></div>)}
         <br />
         {directoryName} {/* Display the directory name */}
       </h1>

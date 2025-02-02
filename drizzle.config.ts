@@ -1,5 +1,7 @@
 import { type Config } from "drizzle-kit";
 
+require('dotenv').config();
+
 const databaseUrl = process.env.DATABASE_URL;
 
 if (!databaseUrl) {
@@ -10,8 +12,7 @@ export default {
   schema: "./server/db/schema.ts",
   dialect: "postgresql",
   dbCredentials: {
-    url: databaseUrl,
-    password: process.env.DATABASE_PASSWORD,
+    url: databaseUrl
   },
   tablesFilter: ["website_*"],
 } satisfies Config;

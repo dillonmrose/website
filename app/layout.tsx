@@ -30,11 +30,6 @@ function TopNav() {
   return (
     <nav className="flex justify-between items-center p-4">
       <div className="text-2xl font-bold">Dillon Rose</div>
-      <div className="flex space-x-4">
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/projects">Projects</a>
-      </div>
     </nav>
   );
 }
