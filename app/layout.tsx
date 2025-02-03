@@ -1,13 +1,7 @@
 import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
-
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
-} from '@clerk/nextjs'
+import { TopNav } from "./_components/TopNav";
+import { ClerkProvider } from '@clerk/nextjs'
 import { type Metadata } from "next";
 import { ViewTransitions } from "next-view-transitions";
 
@@ -44,20 +38,6 @@ export default function RootLayout({
       </html>
       </ClerkProvider>
     </ViewTransitions>
-  );
-}
-
-function TopNav() {
-  return (
-    <nav className="flex justify-between items-center">
-      <div className="text-2xl font-bold">Top Nav</div>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-    </nav>
   );
 }
 
