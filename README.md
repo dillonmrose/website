@@ -9,7 +9,9 @@
 - [X] Make it deploy - Vercel
 - [X] Set up blog and book reviews
 - [X] Add auth - Clerk
-- [ ] Scaffold basic chat ui with mock data
+- [X] Scaffold basic chat ui with mock data
+- [ ] Web socket for chat
+- [ ] State management - Zustand
 - [ ] Session history
 - [ ] Set up a DB - https://orm.drizzle.team/docs/tutorials/drizzle-with-supabase
 - [ ] Set up  a VDB - https://orm.drizzle.team/docs/guides/vector-similarity-search
