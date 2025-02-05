@@ -2,7 +2,7 @@ import "server-only";
 
 import { db } from "./db";
 import { users, messages, chats } from "./db/schema";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 
 export async function getMessages() {
@@ -35,14 +35,16 @@ export async function createUser() {
 
   if (!user.userId) throw new Error("Unauthorized");
 
+  const userData = await currentUser();
+
   const userInDb = await db.insert(users).values({
-    id: user.userId,
-    email: user.email,
-    full_name: user.name,
+    id: userData.id,
+    email: userData.emailAddresses?.[0]?.emailAddress,
+    first_name: userData.firstName,
+    last_name: userData.lastName,
     created_at: new Date(),
   });
-
-  return userInDb;
+  return userData;
 }
 
 export async function insertMessage(messageBody: string, attachaments: string[], existingChatId : number | undefined) {
