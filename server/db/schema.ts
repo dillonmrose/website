@@ -5,7 +5,7 @@ const createTable = pgTableCreator((name) => `website_${name}`);
 
 export const users = createTable('users', {
   id:  varchar("id", { length: 256 }).primaryKey(),
-  full_name: text('full_name').notNull(),
+  full_name: text('full_name'),
   email: varchar('email', { length: 256 }).notNull().unique(),
   created_at: timestamp('created_at').defaultNow(),
 });

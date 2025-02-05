@@ -1,7 +1,6 @@
 'use client'
 
 import { Textarea } from "~/components/ui/textarea"
-import { db } from "~/server/db"
 
 async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault();
@@ -15,12 +14,11 @@ async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 
   try {
     // Make the POST request to the server API
-    const response = await fetch("/api/chat", {
-      method: "POST",
+    const response = await fetch("http://localhost:5000", {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
     });
 
     const responseData = await response.json();

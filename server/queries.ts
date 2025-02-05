@@ -24,8 +24,7 @@ export async function getUser() {
   if (!user.userId) throw new Error("Unauthorized");
 
   const userInDb = await db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.id, user.userId),
-    orderBy: (model, { desc }) => desc(model.id),
+    where: (users, { eq }) => eq(users.id, user.userId)
   });
 
   return userInDb;
@@ -38,8 +37,8 @@ export async function createUser() {
 
   const userInDb = await db.insert(users).values({
     id: user.userId,
-    email: "temp",
-    full_name: "temp",
+    email: user.email,
+    full_name: user.name,
     created_at: new Date(),
   });
 
