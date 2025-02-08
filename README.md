@@ -2,7 +2,6 @@
 
 ## pnpm
   pnpm run dev -> Starts the development server.
-  pnpm run devWS => start the development web socket server
   pnpm run build -> Builds the app for production.
   pnpm start -> Runs the built app in production mode.
 
@@ -13,7 +12,6 @@
 - [X] Scaffold basic chat ui with mock data
 - [ ] trpc - https://www.youtube.com/watch?v=bZ5eBeXmhlU
 - [ ] Web socket for chat
-- [ ] Messages from same caht stay in chat
 - [ ] Create route for chat history
 - [ ] DB Transations - https://orm.drizzle.team/docs/transactions
 - [ ] use fiddler to test that api and fazaar endpoints are blocked

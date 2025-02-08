@@ -33,7 +33,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "postcss.config.mjs"  ],
+, "postcss.config.mjs", "server/wssServer.mjs"  ],
   "exclude": [
     "node_modules"
   ]
