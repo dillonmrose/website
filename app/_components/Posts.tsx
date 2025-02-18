@@ -11,7 +11,7 @@ export const getPosts = (directoryName: string) => {
     const posts = files.filter((file) => file.isDirectory()).map((file) => file.name);
     return posts.map((post)=> {
       return {
-        name : post.replace('_', ' '),
+        name : post.replace('_', ' ').replace(/\b\w/g, char => char.toUpperCase()),
         path : path.join(directoryName, post),
       }
     });
@@ -30,7 +30,7 @@ export const Posts: React.FC<PostsProps> = ({ directoryName }) => {
 
   return (
     <div>
-      {posts.map((post)=> <div key={post.name}><Link className="" id={post.name} href={post.path}>{post.name}</Link><br /></div>)}
+      {posts.map((post)=> <div key={post.name}><Link className="text-lg text-blue-500 hover:text-blue-700 transition-colors duration-200 pl-4" id={post.name} href={post.path}>{post.name}</Link><br /></div>)}
     </div>
   );
 };
