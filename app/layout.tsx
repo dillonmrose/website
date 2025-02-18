@@ -18,7 +18,9 @@ export default function RootLayout({
         <body>
           <main className="h-full min-h-full">
             <TopNav />
-            {children}
+            <div className="flex flex-col items-center h-screen">
+              {children}
+            </div>
           </main>
         </body>
       </html>
