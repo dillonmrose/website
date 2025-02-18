@@ -19,7 +19,6 @@ export default function RootLayout({
           <main className="h-full min-h-full">
             <TopNav />
             {children}
-            <Footer />
           </main>
         </body>
       </html>
