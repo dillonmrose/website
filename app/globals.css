@@ -2,13 +2,4 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-gradient-to-b from-slate-800 to-slate-900 text-white;
-}
-
-@layer base {
-  :root {
-
-    --radius: 0.5rem
-  }
-}
+.pdfobject-container { height: 500px; border: 1px solid #ccc; }

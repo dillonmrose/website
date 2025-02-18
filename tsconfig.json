@@ -32,8 +32,8 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "postcss.config.mjs", "server/wssServer.mjs"  ],
+    "**/*.tsx",
+    "postcss.config.mjs" ],
   "exclude": [
     "node_modules"
   ]
