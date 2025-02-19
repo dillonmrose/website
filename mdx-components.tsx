@@ -20,7 +20,7 @@ const components = {
   ),
   h4: (props: HeadingProps) => <h4 className="font-medium" {...props} />,
   p: (props: ParagraphProps) => (
-    <p className="text-gray-800 leading-snug text-xl" {...props} />
+    <p className="text-gray-800 leading-snug text-xl flex" {...props} />
   ),
   ol: (props: ListProps) => (
     <ol className="text-gray-800 list-decimal pl-5 space-y-2" {...props} />
@@ -37,6 +37,11 @@ const components = {
   ),
   a: ({ href, children, ...props }: AnchorProps) => {
     const className = 'text-blue-500 hover:text-blue-700 transition-colors duration-200';
+    if (href?.endsWith('png')) {
+      return (
+        <img src={href} className="flex h-72 pl-4 pr-4"/>
+      );
+    }
     if (href?.startsWith('/')) {
       return (
         <Link href={href} className={className} {...props}>
