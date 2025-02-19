@@ -10,7 +10,7 @@ type BlockquoteProps = ComponentPropsWithoutRef<'blockquote'>;
 
 const components = {
   h1: (props: HeadingProps) => (
-    <h1 className="text-gray-800 font-medium mb-0 fade-in text-2xl pb-2" {...props} />
+    <h1 className="text-gray-800 font-medium mb-0 fade-in text-2xl pb-6" {...props} />
   ),
   h2: (props: HeadingProps) => (
     <h2 className="text-gray-800 font-medium mt-8 mb-3" {...props} />
@@ -39,7 +39,7 @@ const components = {
     const className = 'text-blue-500 hover:text-blue-700 transition-colors duration-200';
     if (href?.endsWith('png')) {
       return (
-        <img src={href} className="flex h-80 pl-4 pr-4"/>
+        <img src={href} className="flex h-48 md:h-96 pl-4 pr-4"/>
       );
     }
     if (href?.startsWith('/')) {
