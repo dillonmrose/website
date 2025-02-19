@@ -39,7 +39,7 @@ const components = {
     const className = 'text-blue-500 hover:text-blue-700 transition-colors duration-200';
     if (href?.endsWith('png')) {
       return (
-        <img src={href} className="flex h-72 pl-4 pr-4"/>
+        <img src={href} className="flex h-80 pl-4 pr-4"/>
       );
     }
     if (href?.startsWith('/')) {
