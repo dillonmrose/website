@@ -11,7 +11,7 @@ export const getPosts = (directoryName: string) => {
     const posts = files.filter((file) => file.isDirectory()).map((file) => file.name);
     return posts.map((post)=> {
       return {
-        name : post.replace('_', ' ').replace(/\b\w/g, char => char.toUpperCase()),
+        name : post.replaceAll('_', ' ').replace(/\b\w/g, char => char.toUpperCase()),
         path : path.join(directoryName, post),
       }
     });
