@@ -30,7 +30,7 @@ export const Posts: React.FC<PostsProps> = ({ directoryName }) => {
 
   return (
     <div>
-      {posts.map((post)=> <div key={post.name}><Link className="text-3xl text-blue-500 hover:text-blue-700 transition-colors duration-200" id={post.name} href={post.path}>{post.name}</Link><br /></div>)}
+      {posts.map((post)=> <div key={post.name}><Link className="text-2xl text-blue-500 hover:text-blue-700 transition-colors duration-200" id={post.name} href={post.path}>{post.name}</Link><br /></div>)}
     </div>
   );
 };
