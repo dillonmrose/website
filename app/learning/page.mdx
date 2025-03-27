@@ -1,0 +1,314 @@
+# Things to remember
+- Check in that Functional and Non Functional Requirements are sufficient
+- Satisfy Functional Requirements with initial design
+- Satisfy Non Functional Requirements with deep dives
+- Chron job scheduler + distributed file system exist
+- When do time data aggregation, you may want to write to many different time ranges
+    - Current minute, hour, day, all time
+
+## Things to mention
+- Saving calculations until they are needed
+- When using a Message Queue, mention what is your partition key
+- When using DB, mention special index-types and secondary indexes
+
+## Common Non Functional Requirements
+- Scale to ___ reqs/s
+- Scale to ___ TB of data
+- Availability on Read/Write
+- Constitency on Read/Write
+- Latency of ___ is less than 1s
+- Environment Constraints
+- Idempotency - Protect against replayed requests
+- Durability - How important is it that the data in your system is not lost?
+- Data Integrity - How accurate?
+- Fault Tolerance - How well does the system need to handle failures and recover?
+- Security
+- Compliance
+
+# Common Mistakes in Interviews
+1. Premature Sharding
+    - Sharding before approaching 50TB of data
+2. Over-estimating latency
+   - Fetching data from SSD is fast. Redis Cache is not always needed. More often needed for computed signal. Not raw signal.
+3. Over-engineering given a high write throughput
+   - Dont't add message queue in front of DB unless you need the durability or surpassing 50k writes/s
+   A well-tuned Postgres instance with simple writes can handle 20k+ writes per second. What actually limits write capacity are things like complex transactions spanning multiple tables, write amplification from excessive indexes, writes that trigger expensive cascading updates, or heavy concurrent reads competing with writes. If you're just inserting rows or doing simple updates with proper indexes, there's no need for complex queueing systems at 5k WPS.
+
+# [Numbers to Know](https://www.hellointerview.com/learn/system-design/deep-dives/numbers-to-know)
+- ~100k seconds in a day
+- 1-2 ms latency within region
+- 50-150 ms latency cross region
+
+| Term | Size |
+|------|-------|
+|KB | 1 Thousand bytes|
+|MB | 1 Million bytes|
+|GB | 1 Billion bytes |
+|TB | 1 Trilliion bytes |
+|PB | 1 Quadrillion bytes |
+
+### Http codes
+| | |
+|-|-|
+200 | Success
+3** | Redirection
+302 | Redirect
+4** | Client error
+429 | Too many requests
+5** | Server error
+
+<img src="/Numbers.PNG" width="1000px" />
+
+### AWS Large
+- 120 vCPUs
+- 512 GB RAM
+- 60TB SSD storage
+- 10 Gbps within datacenter
+- 100 Mbps- 1Gbps cross region
+
+There are machines with 4TB to 40TB of ram
+
+
+### Application Servers
+- Connections: 100k+ concurrent connections per instance for optimized configurations
+- CPU: 8-64 cores
+- Memory: 64-512GB standard, up to 2TB available for high-memory instances
+- Network: Up to 25 Gbps bandwidth in modern server configurations
+- Startup Time: 30-60 seconds for containerized apps
+
+When to consider sharding:
+- CPU Utilization: Consistently above 70-80%
+- Response Latency: Exceeding SLA or critical thresholds
+- Memory Usage: Trending above 70-80%
+- Network Bandwidth: Approaching 20 Gbps
+
+### Redis Caching
+- Memory: Up to 1TB on memory-optimized instances, with some configurations exceeding this for specialized use cases
+- Latency
+    - Reads: < 1ms within the same region
+    - Writes: 1-2ms average cross-region for optimized systems
+- Throughput
+    - Reads: Over 100k requests/second per instance for in-memory caches like ElastiCache Redis on modern Graviton-based nodes
+    - Writes: Sustained throughput of hundreds of thousands of requests per second
+
+When to consider sharding:
+- Dataset Size: Approaching 1TB in size
+- Throughout: Sustained throughput of 100k+ ops/second
+- Read Latency: Requirements below 0.5ms consistently (if being exceeded, consider sharding)
+
+#### Redis Use Cases
+- Key-Value Cache
+- Pub-Sub
+- Distributed lock
+- Heap / Sorted Set
+- Geospatial index
+- Stream
+
+### DBs
+- Storage: Single instances handle up to 64 TiB (terabytes) for most database engines, with Aurora supporting up to 128 TiB in some configurations
+- Latency
+    - Reads: 1-5ms for cached data, 5-30ms for disk (optimized configurations for RDS and Aurora)
+    - Writes: 5-15ms for commit latency (for single-node, high-performance setups)
+- Throughput
+    - Reads: Up to 50k TPS in single-node configurations on Aurora and RDS
+    - Writes: 10-20k TPS in single-node configurations on Aurora and RDS
+- Connections: 5-20k concurrent connections, depending on database and instance type
+
+When to consider sharding:
+- Dataset Size: Approaching or exceeding 50 TiB may require sharding or distributed solutions
+- Write Throughput: Consistently exceeding 10k TPS indicates scaling considerations
+- Read Latency: Requirements below 5ms for uncached data may necessitate optimization
+- Geographic Distribution: Cross-region replication or distribution needs
+- Backup/Recovery: Backup windows that stretch into hours or become operationally impractical
+
+### Message Queues
+- Throughput: Up to 1 million messages/second per broker in modern configurations
+- Latency: 1-5ms end-to-end within a region for optimized setups
+- Message Size: 1KB-10MB efficiently handled
+- Storage: Up to 50TB per broker in advanced configurations
+- Retention: Weeks to months of data, depending on disk capacity and configuration
+
+When to consider sharding:
+- Throughput: Nearing 800k messages/second per broker
+- Partition Count: Approaching 200k per cluster
+- Consumer Lag: Consistently growing, impacting real-time processing
+- Cross-Region Replication: If geographic redundancy is required
+
+# Data Storage Options
+## SQL DB (Postgres)
+## NoSQL DB (Dynamo DB + Cassandra)
+## Blob Storage (S3)
+## Distributed File System
+
+# ACID
+# Atomicity
+Atomicity ensures that a database transaction is treated as a single, indivisible unit of work. Either all operations within the transaction are successfully completed, or none are applied. If any part of the transaction fails, the entire transaction is rolled back, leaving the database in a consistent state.
+# Consistency
+Consistency refers to how up-to-date and synchronized data is across multiple nodes in a database system. The stronger the consistency, the more reliable but potentially slower the system becomes.
+
+<img src="/Consistency.PNG" width="1000px" />
+
+# Isolation
+Isolation determines how visible a transaction's intermediate changes are to other concurrent transactions. It ensures that transactions execute as if they were alone, preventing issues like dirty reads, non-repeatable reads, and phantom reads.
+
+<img src="/Isolation.PNG" width="1000px" />
+
+<img src="/Isolation_problems.PNG" width="1000px" />
+
+# Durability
+Durability ensures that once a transaction is committed, its changes are permanently saved, even if the system crashes, power fails, or hardware fails. This means that committed data cannot be lost under normal operations.
+## Things to consider
+- Write-Ahead Log (WAL)
+- Putting events in the MQ
+- Checkpointing
+- Replication
+# DB comparison
+## ACID
+<img src="/DB_acid.PNG" width="1000px" />
+## Atomicity
+<img src="/DB_atom.PNG" width="1000px" />
+### Transactions
+<img src="/DB_trans.PNG" width="1000px" />
+## Consistency
+<img src="/DB_con.PNG" width="1000px" />
+## Isolation
+<img src="/DB_iso.PNG" width="1000px" />
+## Durability
+<img src="/DB_dur.PNG" width="1000px" />
+
+## Postgres
+- Based on B-Tree
+### When NOT to use
+- Lots of empty columns i.e. data varies in schema
+## DynamoDB
+- Based on B-Tree
+### Unique Notes
+- GSI = Entire table replication with new partition key
+- LSI = Enables ordering within partition
+- DynamoDB has in house cache solution called DAX (DynamoDB Accelerator)
+- DyanmoDB has in house event stream solution called DyanmoDB streams for CDC
+### When NOT to use
+- Complex query patterns - Complex joins
+- Multi-table transactions
+- Data model complexity - Lot so GSI and LSI
+## Cassandra
+- Based on LSM tree
+### When to use
+- Write heavy load for timestamped events such as views
+
+# Geospatial Options
+<img src="/Geospatial.PNG" width="1000px" />
+## PostgreSQL with PostGIS
+- PostgreSQL with the PostGIS extension is a relational database that supports geospatial data and is best suited for cases where you need advanced geospatial queries, transactional integrity, or complex relationships between your geospatial data and other structured data.
+- PostgreSQL with PostGIS per instance = 1k qps
+## Elastic Search
+- Elasticsearch is a powerful search engine optimized for high-speed text search, but it also supports geospatial data through its geo-point and geo-shape fields. It is particularly suited for fast, large-scale searches, including geospatial queries.
+- Elastic Search per instance = 5k qps
+## Redis
+- Redis provides a fast, in-memory solution for geospatial data and is best suited for real-time, low-latency, and high-throughput applications
+- Redis Geohashing per instance = 100k QPS 
+
+# [DB Indexing](https://www.hellointerview.com/learn/system-design/deep-dives/db-indexing)
+Indexs tell you which page the data you are looking for is on so that you don't have to look at all pages.
+### B Trees
+O(Log(n)) to determine a page
+Support range queries specifcally efficient 1-dimensional range queries
+
+### Inverted Index
+Take the content of each item and create a hashmap back to the entity.
+Most often used for full text search.
+
+```
+doc1 = 'fast car'
+doc2 = 'slow car'
+
+Inverted Index
+'fast' -> [doc1]
+'slow' -> [doc2]
+'car' -> [doc1, doc2]
+```
+
+### Hash index
+O(1) to determine a page
+Don't support range queries
+Only really used for in memory stores
+### Geospatial index
+Geospatial data (long, lat)
+Support range queries specifcally efficient 2-dimensional range queries
+
+#### Geohashing
+Base 4 hash function that maps lat,logs onto spatial tiles.
+- Better for write heavy load because reindexing a quad tree is costly
+#### Quadtrees
+4-tree where nodes are only split into sub nodes when it contains to much data. So the tree is more deep in dense areas and less deep in sparesly populated areas.
+- Better for dealing with cities
+#### R-Tree
+Spatial tree data structure that is less specific about dividing areas into 4 symmetric tiles
+
+# Rate Limiting
+<img src="/RateLimiting.PNG" width="1000px" />
+## Token bucket
+Tokens allocated to each incoming source to certain amouunt i.e. bucket size
+Tokens are refilled periodically. Overflowing the bucket with tokens are removed
+Each request consumes a token
+If the bucket is empty, the request is denied
+
+Better at allowing burts of traffic
+## Leaky bucket
+Requests are put into a queue and processed at a constant rate
+If too many requests come, the queue will overflow and those requests will be dropped
+## Fixed window
+Current value = Num in current window
+Allow if Current value < threshold
+Can be too strict if there was a burst of queries early in window or not be strict enough if there was a burst in the previous window
+
+## Sliding window counter
+Current value = Num in current window  + (Num in prev window / overlap time in that window)
+Allow if Current value < threshold
+Smooths out fixed window
+
+## Sliding window log
+Process
+1. Remove outdated timestamp from log
+2. Add timestamp to log
+3. If log is over capacity, reject
+
+More overhread
+
+# Miscellaneous
+## Bloomfilters
+Increment K hashes % M
+
+1. Item might be in the set
+2. Item is deifnnitely not in the set
+
+### When to use
+1. Space contsinaed
+2. Tolerant of false positives
+3. Querying for membership in set
+4. Have known items i.e. You need to be able to query this with something
+
+## Count Min Sketch
+Increment K hashes % M
+return min of the k value across hashes
+
+Determines what is upper bound of number of times this item has occured
+
+### When to use
+1. Querying for counts
+2. Space constrained
+3. Tolerant to approximations 
+4. Have known items i.e. You need to be able to query this with something
+
+Top K
+Rate limiting
+Anomally detection
+
+When there are many keys that you don't want to store them all but you only care about the few outliers
+
+## HyperLogLog 
+Determine approximate number of times something happened
+Keep track of Max value of trailling zeros K hashes accross events/users
+Take average of values and raise 2 to that power
+
+Trailing zeros of a hash represent a coin flip landing heads. Each subsequent trailing 0 make sthe event more rare to occur and helps approximate total count. Multiple hashes helps smooth out the approximation
