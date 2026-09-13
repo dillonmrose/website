@@ -1,16 +1,31 @@
 import Link from "next/link";
 
-export function TopNav() {  
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "Resume", href: "/resume" },
+  { label: "Blog", href: "/blog" },
+  { label: "Books", href: "/books" },
+];
+
+export function TopNav() {
   return (
-    <div className="w-full">
-      <h1 className="flex w-full justify-center text-5xl font-bold border-b-2 border-gray-300 pb-2 pl-2 pt-20">Dillon Rose</h1>
-      <nav className="flex justify-center gap-6 pl-4 pr-4 pb-6">
-        <Link href="/" className="text-2xl text-blue-500 hover:text-blue-700 transition-colors duration-200">Home</Link>
-        <Link href="/resume" className="text-2xl text-blue-500 hover:text-blue-700 transition-colors duration-200">Resume</Link>
-        <Link href="/blog" className="text-2xl text-blue-500 hover:text-blue-700 transition-colors duration-200">Blog</Link>
-        <Link href="/books" className="text-2xl text-blue-500 hover:text-blue-700 transition-colors duration-200">Books</Link>
-        <Link href="/learning" className="text-2xl text-blue-500 hover:text-blue-700 transition-colors duration-200">Learning</Link>       
-      </nav>
-    </div>
+    <header className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+      <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+        <Link href="/" className="font-semibold text-gray-900 hover:text-gray-500 transition-colors">
+          Dillon Rose
+        </Link>
+        <nav className="flex items-center gap-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+    </header>
   );
 }

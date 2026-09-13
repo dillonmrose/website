@@ -30,7 +30,17 @@ export const Posts: React.FC<PostsProps> = ({ directoryName }) => {
 
   return (
     <div>
-      {posts.map((post)=> <div key={post.name}><Link className="text-2xl text-blue-500 hover:text-blue-700 transition-colors duration-200" id={post.name} href={post.path}>{post.name}</Link><br /></div>)}
+      {posts.map((post) => (
+        <div key={post.name} className="py-1.5">
+          <Link
+            className="text-base text-gray-700 hover:text-gray-900 transition-colors underline decoration-gray-300 underline-offset-2 hover:decoration-gray-900"
+            id={post.name}
+            href={post.path}
+          >
+            {post.name}
+          </Link>
+        </div>
+      ))}
     </div>
   );
 };

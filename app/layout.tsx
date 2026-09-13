@@ -2,9 +2,12 @@ import "./globals.css";
 import { TopNav } from "./_components/TopNav";
 import { type Metadata } from "next";
 import { ViewTransitions } from "next-view-transitions";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "DIllon Rose",
+  title: "Dillon Rose",
   description: "Dillon Rose's Personal Website",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
@@ -14,13 +17,11 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ViewTransitions>
-      <html lang="en" className="h-full">
-        <body>
-          <main className="h-full min-h-full">
-            <TopNav />
-            <div className="flex flex-col items-center h-screen">
-              {children}
-            </div>
+      <html lang="en" className={inter.className}>
+        <body className="antialiased text-gray-900 bg-white">
+          <TopNav />
+          <main className="max-w-4xl mx-auto px-6 py-10">
+            {children}
           </main>
         </body>
       </html>
