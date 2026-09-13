@@ -79,43 +79,46 @@ function ProjectSection({ project }: { project: Project }) {
       if (!el) return;
 
       const rect = el.getBoundingClientRect();
-      const range = rect.height - window.innerHeight;
-      if (range <= 0) return;
-      const p = c(-rect.top / range);
+      const vh = window.innerHeight;
 
-      // Meta label: 0 → 0.12
+      // p starts as soon as the section is visible in the viewport (coming from bottom),
+      // reaches 1 when the section has fully scrolled out the top.
+      const p = c((vh - rect.top) / rect.height);
+
+      // p ≈ 0.083 at page load (hero is 75vh, content bottom just at viewport bottom).
+      // All animations start above 0.09 so nothing shows on load; they fire
+      // the instant the user scrolls and content enters the viewport.
+
       if (metaRef.current) {
-        const t = r(p, 0, 0.12);
+        const t = r(p, 0.09, 0.16);
         metaRef.current.style.opacity = `${t}`;
         metaRef.current.style.transform = `translateY(${(1 - t) * 20}px)`;
       }
-
-      // Heading: 0.04 → 0.2
       if (headingRef.current) {
-        const t = r(p, 0.04, 0.2);
+        const t = r(p, 0.12, 0.21);
         headingRef.current.style.opacity = `${t}`;
         headingRef.current.style.transform = `translateY(${(1 - t) * 32}px)`;
       }
 
-      // Image: scale up + fade in, 0.12 → 0.38
+      // Image: scales in during early sticky scroll
       if (imgRef.current) {
-        const t = r(p, 0.12, 0.38);
+        const t = r(p, 0.34, 0.48);
         imgRef.current.style.opacity = `${t}`;
         imgRef.current.style.transform = `scale(${0.88 + t * 0.12})`;
       }
 
-      // Bullets: staggered from 0.35
+      // Bullets: staggered through sticky scroll
       bulletRefs.current.forEach((el, i) => {
         if (!el) return;
-        const lo = 0.35 + i * 0.1;
-        const t = r(p, lo, lo + 0.1);
+        const lo = 0.5 + i * 0.08;
+        const t = r(p, lo, lo + 0.08);
         el.style.opacity = `${t}`;
         el.style.transform = `translateY(${(1 - t) * 16}px)`;
       });
 
-      // Stat: 0.75 → 0.88
+      // Stat: near end of sticky scroll
       if (statRef.current) {
-        const t = r(p, 0.75, 0.88);
+        const t = r(p, 0.82, 0.90);
         statRef.current.style.opacity = `${t}`;
         statRef.current.style.transform = `translateY(${(1 - t) * 16}px)`;
       }
@@ -128,7 +131,7 @@ function ProjectSection({ project }: { project: Project }) {
 
   return (
     <section ref={sectionRef} className="relative border-b border-gray-100" style={{ height: "300vh" }}>
-      <div className="sticky top-0 h-screen flex flex-col justify-center gap-6 overflow-hidden">
+      <div className="sticky top-0 h-screen flex flex-col justify-center gap-5 overflow-hidden">
 
         <p
           ref={metaRef}
@@ -194,7 +197,7 @@ export default function HomePage() {
     <div className="-my-10">
 
       {/* Hero */}
-      <section className="flex flex-col justify-center min-h-[75vh] py-20">
+      <section className="flex flex-col justify-center min-h-[75vh] py-20 relative">
         <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-5">
           Full Stack Engineer
         </p>
@@ -207,6 +210,12 @@ export default function HomePage() {
           A decade at Microsoft shipping products from zero to millions of users —
           most recently as Principal Engineer on Microsoft Copilot.
         </p>
+        <div className="absolute bottom-8 left-0 flex flex-col items-start gap-1 animate-bounce">
+          <span className="text-xs tracking-widest text-gray-300 uppercase">Scroll</span>
+          <svg className="h-4 w-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
       </section>
 
       {/* Projects */}
