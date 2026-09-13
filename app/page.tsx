@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
 
 interface Project {
   name: string;
   role: string;
   dates: string;
-  description: string;
   stat?: string;
   bullets: string[];
   images: string[];
@@ -17,7 +16,6 @@ const projects: Project[] = [
     name: "Microsoft Copilot",
     role: "Principal Software Engineer",
     dates: "2023 – Present",
-    description: "AI assistant shipped across Teams, Outlook, Windows, Bing, and Office.com.",
     stat: "~7M daily active users",
     bullets: [
       "Designed Turn 0 Prompt Suggestions, initiating ~3% of all sessions",
@@ -31,7 +29,6 @@ const projects: Project[] = [
     name: "Play My Emails",
     role: "Senior Software Engineer, Cortana",
     dates: "2017 – 2023",
-    description: "Voice-first email experience built from zero and scaled to over a million users.",
     stat: "1M+ monthly active users",
     bullets: [
       "Incubated the feature from scratch and grew it to 1M monthly active users",
@@ -45,7 +42,6 @@ const projects: Project[] = [
     name: "Bing Local Search",
     role: "Software Engineer, Bing",
     dates: "2014 – 2016",
-    description: "Relevance and ranking improvements for local business search on Bing.",
     bullets: [
       "Optimized classifier and ranker in the Bing Local Search stack",
       "Built a rule-based classifier for head queries, reducing latency and cost",
@@ -56,7 +52,6 @@ const projects: Project[] = [
     name: "Offline Maps Search",
     role: "Software Engineer II, Microsoft Maps",
     dates: "2016 – 2017",
-    description: "Brought full search capability to the Windows Maps app without a network connection.",
     bullets: [
       "Rearchitected Bing's online search stack to run fully offline inside Windows Maps",
       "Defined the strategy for selecting which locations and businesses to download",
@@ -65,41 +60,132 @@ const projects: Project[] = [
   },
 ];
 
-function FadeIn({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+// Clamp value between 0 and 1
+const c = (n: number) => Math.max(0, Math.min(1, n));
+// Map scroll progress p through a [lo, hi] window to 0→1
+const r = (p: number, lo: number, hi: number) => c((p - lo) / (hi - lo));
+
+function ProjectSection({ project }: { project: Project }) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const metaRef = useRef<HTMLParagraphElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
+  const bulletRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const statRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setVisible(true);
-      },
-      { threshold: 0.1 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    const onScroll = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+
+      const rect = el.getBoundingClientRect();
+      const range = rect.height - window.innerHeight;
+      if (range <= 0) return;
+      const p = c(-rect.top / range);
+
+      // Meta label: 0 → 0.12
+      if (metaRef.current) {
+        const t = r(p, 0, 0.12);
+        metaRef.current.style.opacity = `${t}`;
+        metaRef.current.style.transform = `translateY(${(1 - t) * 20}px)`;
+      }
+
+      // Heading: 0.04 → 0.2
+      if (headingRef.current) {
+        const t = r(p, 0.04, 0.2);
+        headingRef.current.style.opacity = `${t}`;
+        headingRef.current.style.transform = `translateY(${(1 - t) * 32}px)`;
+      }
+
+      // Image: scale up + fade in, 0.12 → 0.38
+      if (imgRef.current) {
+        const t = r(p, 0.12, 0.38);
+        imgRef.current.style.opacity = `${t}`;
+        imgRef.current.style.transform = `scale(${0.88 + t * 0.12})`;
+      }
+
+      // Bullets: staggered from 0.35
+      bulletRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const lo = 0.35 + i * 0.1;
+        const t = r(p, lo, lo + 0.1);
+        el.style.opacity = `${t}`;
+        el.style.transform = `translateY(${(1 - t) * 16}px)`;
+      });
+
+      // Stat: 0.75 → 0.88
+      if (statRef.current) {
+        const t = r(p, 0.75, 0.88);
+        statRef.current.style.opacity = `${t}`;
+        statRef.current.style.transform = `translateY(${(1 - t) * 16}px)`;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <div
-      ref={ref}
-      style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-all duration-700 ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-      } ${className}`}
-    >
-      {children}
-    </div>
+    <section ref={sectionRef} className="relative border-b border-gray-100" style={{ height: "300vh" }}>
+      <div className="sticky top-0 h-screen flex flex-col justify-center gap-6 overflow-hidden">
+
+        <p
+          ref={metaRef}
+          style={{ opacity: 0, transform: "translateY(20px)" }}
+          className="text-xs font-semibold tracking-widest text-gray-400 uppercase"
+        >
+          {project.dates} · {project.role}
+        </p>
+
+        <h2
+          ref={headingRef}
+          style={{ opacity: 0, transform: "translateY(32px)" }}
+          className="text-5xl font-bold text-gray-900"
+        >
+          {project.name}
+        </h2>
+
+        <div
+          ref={imgRef}
+          style={{ opacity: 0, transform: "scale(0.88)", transformOrigin: "left center" }}
+          className="flex gap-4 h-80"
+        >
+          {project.images.map((src) => (
+            <img
+              key={src}
+              src={src}
+              alt={project.name}
+              className="flex-1 min-w-0 object-contain rounded-xl"
+            />
+          ))}
+        </div>
+
+        <div className="space-y-3">
+          {project.bullets.map((bullet, i) => (
+            <div
+              key={bullet}
+              ref={(el) => { bulletRefs.current[i] = el; }}
+              style={{ opacity: 0, transform: "translateY(16px)" }}
+              className="flex gap-3 text-gray-600"
+            >
+              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
+              <p className="leading-relaxed">{bullet}</p>
+            </div>
+          ))}
+        </div>
+
+        {project.stat && (
+          <div
+            ref={statRef}
+            style={{ opacity: 0, transform: "translateY(16px)" }}
+          >
+            <p className="text-3xl font-bold text-gray-900">{project.stat}</p>
+          </div>
+        )}
+
+      </div>
+    </section>
   );
 }
 
@@ -108,70 +194,25 @@ export default function HomePage() {
     <div className="-my-10">
 
       {/* Hero */}
-      <section className="flex flex-col justify-center min-h-[70vh] py-20">
-        <FadeIn>
-          <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-5">
-            Full Stack Engineer
-          </p>
-          <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-6">
-            Hi, I&apos;m Dillon.<br />
-            I build AI experiences<br />
-            people actually use.
-          </h1>
-          <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
-            A decade at Microsoft shipping products from zero to millions of users —
-            most recently as Principal Engineer on Microsoft Copilot.
-          </p>
-        </FadeIn>
+      <section className="flex flex-col justify-center min-h-[75vh] py-20">
+        <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-5">
+          Full Stack Engineer
+        </p>
+        <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-6">
+          Hi, I&apos;m Dillon.<br />
+          I build AI experiences<br />
+          people actually use.
+        </h1>
+        <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+          A decade at Microsoft shipping products from zero to millions of users —
+          most recently as Principal Engineer on Microsoft Copilot.
+        </p>
       </section>
 
-      {/* Project sections */}
+      {/* Projects */}
       <div className="border-t border-gray-100">
         {projects.map((project) => (
-          <section
-            key={project.name}
-            className="flex gap-16 min-h-[110vh] py-24 border-b border-gray-100"
-          >
-            {/* Sticky left panel */}
-            <div className="w-64 shrink-0 sticky top-20 h-fit">
-              <p className="text-[10px] font-semibold tracking-widest text-gray-400 uppercase mb-3">
-                {project.dates}
-              </p>
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">{project.name}</h2>
-              <p className="text-blue-500 text-sm mb-4">{project.role}</p>
-              <p className="text-gray-500 text-sm leading-relaxed">{project.description}</p>
-              {project.stat && (
-                <p className="mt-5 text-3xl font-bold text-gray-900">{project.stat}</p>
-              )}
-            </div>
-
-            {/* Scrolling right panel */}
-            <div className="flex-1 space-y-8 min-w-0 pt-1">
-              <FadeIn delay={100}>
-                <div className="flex flex-wrap gap-4">
-                  {project.images.map((src) => (
-                    <img
-                      key={src}
-                      src={src}
-                      alt={project.name}
-                      className="rounded-lg max-h-64 object-contain"
-                    />
-                  ))}
-                </div>
-              </FadeIn>
-
-              <div className="space-y-4">
-                {project.bullets.map((bullet, i) => (
-                  <FadeIn key={bullet} delay={180 + i * 90}>
-                    <div className="flex gap-3 text-gray-600">
-                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-200 shrink-0" />
-                      <p className="leading-relaxed">{bullet}</p>
-                    </div>
-                  </FadeIn>
-                ))}
-              </div>
-            </div>
-          </section>
+          <ProjectSection key={project.name} project={project} />
         ))}
       </div>
 
