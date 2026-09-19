@@ -401,7 +401,7 @@ export default function HomePage() {
       )}
 
       {/* Slide indicators — always based on flatSlides count (no separate image dots on mobile) */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
         {Array.from({ length: 1 + flatSlides.length }).map((_, i) => {
           const isActive = isMobile
             ? (i === 0 ? current === 0 : current === i * 2 - 1 || current === i * 2)
