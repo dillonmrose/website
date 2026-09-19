@@ -284,6 +284,7 @@ function ProjectSlide({ project, images, bullets, imageClass, stat, subType }: O
 export default function HomePage() {
   const [current, setCurrent] = useState(0);
   const locked = useRef(false);
+  const lastDirection = useRef<1 | -1>(1);
   const isMobile = useIsMobile();
   const activeSlides = isMobile ? mobileFlatSlides : flatSlides;
   const total = 1 + activeSlides.length;
@@ -296,6 +297,7 @@ export default function HomePage() {
     (idx: number) => {
       const next = Math.max(0, Math.min(total - 1, idx));
       if (next === current || locked.current) return;
+      lastDirection.current = next > current ? 1 : -1;
       setCurrent(next);
       locked.current = true;
       setTimeout(() => { locked.current = false; }, 900);
@@ -320,7 +322,7 @@ export default function HomePage() {
     if (slide?.subType === "image") {
       const t = setTimeout(() => {
         locked.current = false;
-        goTo(current + 1);
+        goTo(current + lastDirection.current);
       }, 500);
       return () => clearTimeout(t);
     }
