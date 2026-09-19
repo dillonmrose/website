@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 interface Project {
   name: string;
@@ -8,7 +8,7 @@ interface Project {
   dates: string;
   stat?: string;
   bullets: string[];
-  images: string[];
+  imageGroups: string[][];
 }
 
 const projects: Project[] = [
@@ -23,7 +23,7 @@ const projects: Project[] = [
       "Cut commit-to-production from 2 weeks to 3 days by rearchitecting deployment",
       "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
     ],
-    images: ["/Copilot.png"],
+    imageGroups: [["/Copilot.png"], ["/Copilot2.png"]],
   },
   {
     name: "Play My Emails",
@@ -36,7 +36,17 @@ const projects: Project[] = [
       "Designed a custom audio streaming protocol for email readouts",
       "Added variable playback speed based on user panel feedback",
     ],
-    images: ["/PME1.png", "/PME2.png"],
+    imageGroups: [["/PME1.png", "/PME2.png"]],
+  },
+  {
+    name: "Offline Maps",
+    role: "Software Engineer II, Microsoft Maps",
+    dates: "2016 – 2017",
+    bullets: [
+      "Rearchitected Bing's online search stack to run fully offline inside Windows Maps",
+      "Defined the strategy for selecting which locations and businesses to download",
+    ],
+    imageGroups: [["/OfflineMaps.png"]],
   },
   {
     name: "Bing Local Search",
@@ -46,182 +56,185 @@ const projects: Project[] = [
       "Optimized classifier and ranker in the Bing Local Search stack",
       "Built a rule-based classifier for head queries, reducing latency and cost",
     ],
-    images: ["/BingMaps.png"],
-  },
-  {
-    name: "Offline Maps Search",
-    role: "Software Engineer II, Microsoft Maps",
-    dates: "2016 – 2017",
-    bullets: [
-      "Rearchitected Bing's online search stack to run fully offline inside Windows Maps",
-      "Defined the strategy for selecting which locations and businesses to download",
-    ],
-    images: ["/OfflineMaps.png"],
+    imageGroups: [["/BingMaps.png", "/BingLocalSearch.png"]],
   },
 ];
 
-// Clamp value between 0 and 1
-const c = (n: number) => Math.max(0, Math.min(1, n));
-// Map scroll progress p through a [lo, hi] window to 0→1
-const r = (p: number, lo: number, hi: number) => c((p - lo) / (hi - lo));
+type SlideState = "active" | "above" | "below";
 
-function ProjectSection({ project }: { project: Project }) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
-  const metaRef = useRef<HTMLParagraphElement>(null);
-  const imgRef = useRef<HTMLDivElement>(null);
-  const bulletRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const statRef = useRef<HTMLDivElement>(null);
+interface FlatSlide {
+  key: string;
+  project: Project;
+  images: string[];
+  isFirst: boolean;
+}
 
-  useEffect(() => {
-    const onScroll = () => {
-      const el = sectionRef.current;
-      if (!el) return;
+const flatSlides: FlatSlide[] = projects.flatMap((project) =>
+  project.imageGroups.map((images, gi) => ({
+    key: `${project.name}-${gi}`,
+    project,
+    images,
+    isFirst: gi === 0,
+  }))
+);
 
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-
-      // p starts as soon as the section is visible in the viewport (coming from bottom),
-      // reaches 1 when the section has fully scrolled out the top.
-      const p = c((vh - rect.top) / rect.height);
-
-      // p ≈ 0.083 at page load (hero is 75vh, content bottom just at viewport bottom).
-      // All animations start above 0.09 so nothing shows on load; they fire
-      // the instant the user scrolls and content enters the viewport.
-
-      if (metaRef.current) {
-        const t = r(p, 0.09, 0.16);
-        metaRef.current.style.opacity = `${t}`;
-        metaRef.current.style.transform = `translateY(${(1 - t) * 20}px)`;
-      }
-      if (headingRef.current) {
-        const t = r(p, 0.12, 0.21);
-        headingRef.current.style.opacity = `${t}`;
-        headingRef.current.style.transform = `translateY(${(1 - t) * 32}px)`;
-      }
-
-      // Image: scales in during early sticky scroll
-      if (imgRef.current) {
-        const t = r(p, 0.34, 0.48);
-        imgRef.current.style.opacity = `${t}`;
-        imgRef.current.style.transform = `scale(${0.88 + t * 0.12})`;
-      }
-
-      // Bullets: staggered through sticky scroll
-      bulletRefs.current.forEach((el, i) => {
-        if (!el) return;
-        const lo = 0.5 + i * 0.08;
-        const t = r(p, lo, lo + 0.08);
-        el.style.opacity = `${t}`;
-        el.style.transform = `translateY(${(1 - t) * 16}px)`;
-      });
-
-      // Stat: near end of sticky scroll
-      if (statRef.current) {
-        const t = r(p, 0.82, 0.90);
-        statRef.current.style.opacity = `${t}`;
-        statRef.current.style.transform = `translateY(${(1 - t) * 16}px)`;
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
+function Slide({ children, state }: { children: React.ReactNode; state: SlideState }) {
   return (
-    <section ref={sectionRef} className="relative border-b border-gray-100" style={{ height: "300vh" }}>
-      <div className="sticky top-0 h-screen flex flex-col justify-center gap-5 overflow-hidden">
+    <div
+      className="absolute inset-0 transition-all duration-700 ease-in-out"
+      style={{
+        opacity: state === "active" ? 1 : 0,
+        transform:
+          state === "active"
+            ? "translateY(0)"
+            : state === "above"
+            ? "translateY(-48px)"
+            : "translateY(48px)",
+        pointerEvents: state === "active" ? "auto" : "none",
+        zIndex: state === "active" ? 1 : 0,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
-        <p
-          ref={metaRef}
-          style={{ opacity: 0, transform: "translateY(20px)" }}
-          className="text-xs font-semibold tracking-widest text-gray-400 uppercase"
-        >
-          {project.dates} · {project.role}
-        </p>
+function ProjectSlide({ project, images, isFirst }: FlatSlide) {
+  return (
+    <div className="h-full flex items-center w-[70%] mx-auto px-8">
+      <div className="flex gap-12 items-center w-full">
 
-        <h2
-          ref={headingRef}
-          style={{ opacity: 0, transform: "translateY(32px)" }}
-          className="text-5xl font-bold text-gray-900"
-        >
-          {project.name}
-        </h2>
-
-        <div
-          ref={imgRef}
-          style={{ opacity: 0, transform: "scale(0.88)", transformOrigin: "left center" }}
-          className="flex gap-4 h-80"
-        >
-          {project.images.map((src) => (
-            <img
-              key={src}
-              src={src}
-              alt={project.name}
-              className="flex-1 min-w-0 object-contain rounded-xl"
-            />
-          ))}
+        {/* Left: text on first slide, stat on continuation */}
+        <div className="flex-1 space-y-5 min-w-0">
+          {isFirst ? (
+            <>
+              <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
+                {project.dates} · {project.role}
+              </p>
+              <h2 className="text-5xl font-bold text-gray-900">{project.name}</h2>
+              <div className="space-y-3">
+                {project.bullets.map((bullet) => (
+                  <div key={bullet} className="flex gap-3 text-gray-600">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
+                    <p className="leading-relaxed">{bullet}</p>
+                  </div>
+                ))}
+              </div>
+              {project.stat && (
+                <p className="text-3xl font-bold text-gray-900">{project.stat}</p>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
+                {project.name} — Today
+              </p>
+              {project.stat && (
+                <p className="text-5xl font-bold text-gray-900">{project.stat}</p>
+              )}
+            </>
+          )}
         </div>
 
-        <div className="space-y-3">
-          {project.bullets.map((bullet, i) => (
-            <div
-              key={bullet}
-              ref={(el) => { bulletRefs.current[i] = el; }}
-              style={{ opacity: 0, transform: "translateY(16px)" }}
-              className="flex gap-3 text-gray-600"
-            >
-              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
-              <p className="leading-relaxed">{bullet}</p>
+        {/* Right: images */}
+        <div className="flex-1 flex gap-3 items-center min-w-0">
+          {images.map((src) => (
+            <div key={src} className="flex-1 min-w-0 flex justify-center">
+              <img
+                src={src}
+                alt={project.name}
+                className="max-w-full h-auto max-h-[55vh] rounded-xl"
+              />
             </div>
           ))}
         </div>
 
-        {project.stat && (
-          <div
-            ref={statRef}
-            style={{ opacity: 0, transform: "translateY(16px)" }}
-          >
-            <p className="text-3xl font-bold text-gray-900">{project.stat}</p>
-          </div>
-        )}
-
       </div>
-    </section>
+    </div>
   );
 }
 
 export default function HomePage() {
+  const [current, setCurrent] = useState(0);
+  const locked = useRef(false);
+  const total = 1 + flatSlides.length;
+
+  const goTo = useCallback(
+    (idx: number) => {
+      const next = Math.max(0, Math.min(total - 1, idx));
+      if (next === current || locked.current) return;
+      setCurrent(next);
+      locked.current = true;
+      setTimeout(() => { locked.current = false; }, 900);
+    },
+    [current, total]
+  );
+
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 20) return;
+      goTo(current + (e.deltaY > 0 ? 1 : -1));
+    };
+    window.addEventListener("wheel", onWheel, { passive: true });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, [current, goTo]);
+
+  const slideState = (i: number): SlideState =>
+    i === current ? "active" : i < current ? "above" : "below";
+
   return (
-    <div className="-my-10">
+    <div className="fixed inset-0 overflow-hidden" style={{ top: "56px" }}>
 
       {/* Hero */}
-      <section className="flex flex-col justify-center min-h-[75vh] py-20 relative">
-        <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-5">
-          Full Stack Engineer
-        </p>
-        <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-6">
-          Hi, I&apos;m Dillon.<br />
-          I build AI experiences<br />
-          people actually use.
-        </h1>
-        <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
-          A decade at Microsoft shipping products from zero to millions of users —
-          most recently as Principal Engineer on Microsoft Copilot.
-        </p>
-        <div className="absolute bottom-8 left-0 flex flex-col items-start gap-1 animate-bounce">
-          <span className="text-xs tracking-widest text-gray-300 uppercase">Scroll</span>
-          <svg className="h-4 w-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <Slide state={slideState(0)}>
+        <div className="h-full flex flex-col justify-center max-w-4xl mx-auto px-6">
+          <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-5">
+            Full Stack Engineer
+          </p>
+          <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-6">
+            Hi, I&apos;m Dillon.<br />
+            I convert AI capabilities<br />
+            into products people actually want.
+          </h1>
+          <p className="text-gray-500 text-lg max-w-xl leading-relaxed">
+            A decade of AI-adjacent development at Microsoft,
+            shipping products from zero to millions.
+          </p>
+        </div>
+      </Slide>
+
+      {/* Project slides */}
+      {flatSlides.map((slide, i) => (
+        <Slide key={slide.key} state={slideState(i + 1)}>
+          <ProjectSlide {...slide} />
+        </Slide>
+      ))}
+
+      {/* Down arrow */}
+      {current < total - 1 && (
+        <button
+          onClick={() => goTo(current + 1)}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-300 hover:text-gray-600 transition-colors animate-bounce"
+          aria-label="Next slide"
+        >
+          <span className="text-xs tracking-widest uppercase">Scroll</span>
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
-        </div>
-      </section>
+        </button>
+      )}
 
-      {/* Projects */}
-      <div className="border-t border-gray-100">
-        {projects.map((project) => (
-          <ProjectSection key={project.name} project={project} />
+      {/* Slide indicators */}
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+        {Array.from({ length: total }).map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+              i === current ? "bg-gray-900 scale-150" : "bg-gray-300 hover:bg-gray-500"
+            }`}
+            aria-label={`Go to slide ${i + 1}`}
+          />
         ))}
       </div>
 
