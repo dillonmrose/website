@@ -53,8 +53,8 @@ const projects: Project[] = [
       ],
     ],
     slideImageClass: [
-      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] translate-y-[10vh] md:-translate-y-[5vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
-      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] translate-y-[3vh] md:-translate-y-[5vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] -translate-y-[7vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     ],
   },
   {
@@ -68,7 +68,7 @@ const projects: Project[] = [
       "Designed audio streaming protocol for email readouts. Enabled seek and variable playback speed",
     ],
     imageGroups: [["/PME1.png", "/PME2.png"]],
-    slideImageClass: ["max-w-full h-auto max-h-[40vh] md:max-h-[55vh] scale-[0.65] md:scale-[0.9] translate-y-[5vh] md:-translate-y-[10vh] origin-center rounded-xl [filter:drop-shadow(0_18px_16px_rgb(0_0_0/0.22))_drop-shadow(0_-6px_8px_rgb(0_0_0/0.14))]"],
+    slideImageClass: ["max-w-full h-auto max-h-[40vh] md:max-h-[55vh] scale-[0.65] md:scale-[0.9] -translate-y-[2vh] md:-translate-y-[10vh] origin-center rounded-xl [filter:drop-shadow(0_18px_16px_rgb(0_0_0/0.22))_drop-shadow(0_-6px_8px_rgb(0_0_0/0.14))]"],
   },
   {
     name: "Microsoft Maps",
@@ -79,7 +79,7 @@ const projects: Project[] = [
       "Defined the strategy for selecting which locations and businesses to download",
     ],
     imageGroups: [["/OfflineMaps.png"]],
-    slideImageClass: ["max-w-full h-auto max-h-[40vh] md:max-h-[55vh] translate-y-[5vh] md:-translate-y-[2vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]"],
+    slideImageClass: ["max-w-full h-auto max-h-[40vh] md:max-h-[55vh] -translate-y-[2vh] md:-translate-y-[2vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]"],
   },
   {
     name: "Bing",
@@ -91,8 +91,8 @@ const projects: Project[] = [
     ],
     imageGroups: [["/BingLocalSearch.png"], ["/BingMaps.png"]],
     slideImageClass: [
-      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] translate-y-[3vh] md:-translate-y-[7vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
-      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] translate-y-[3vh] md:-translate-y-[7vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] -translate-y-[4vh] md:-translate-y-[7vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] -translate-y-[4vh] md:-translate-y-[7vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     ],
     slideBullets: [
       null,
@@ -120,9 +120,9 @@ const flatSlides: FlatSlide[] = projects.flatMap((project) =>
     project,
     images,
     bullets: project.slideBullets?.[gi] ?? project.bullets,
-    imageClass: project.slideImageClass?.[gi] ?? "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+    imageClass: project.slideImageClass?.[gi] ?? "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] -translate-y-[7vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     stat: project.slideStat ? (project.slideStat[gi] ?? null) : (project.stat ?? null),
-    pt: project.slidePt?.[gi] ?? "pt-[13vh] md:pt-[30vh]",
+    pt: project.slidePt?.[gi] ?? "pt-[6vh] md:pt-[30vh]",
   }))
 );
 
@@ -145,7 +145,7 @@ function useIsMobile() {
 // Shared layout wrapper — used by both the persistent header and each slide.
 // Uses a fixed pt-[30vh] so the heading always lands at the same pixel,
 // regardless of how many bullets are below it.
-function SlideLayout({ hasImages, pt = "pt-[13vh] md:pt-[30vh]", children }: { hasImages: boolean; pt?: string; children: React.ReactNode }) {
+function SlideLayout({ hasImages, pt = "pt-[6vh] md:pt-[30vh]", children }: { hasImages: boolean; pt?: string; children: React.ReactNode }) {
   return (
     <div className={`absolute inset-0 w-[90%] md:w-[70%] mx-auto px-4 md:px-8 ${pt}`}>
       <div className={`flex gap-12 items-start w-full ${!hasImages ? "justify-center" : ""}`}>
@@ -181,10 +181,10 @@ function PersistentHeader({ project }: { project: Project | null }) {
     >
       <SlideLayout hasImages={hasImages}>
         <div className={`${hasImages ? "w-[40%] shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
-          <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-            {shown.dates} · {shown.role}
+          <p className="text-[10px] md:text-xs font-semibold tracking-widest text-gray-400 uppercase">
+            {shown.dates}<br className="md:hidden" /><span className="hidden md:inline"> · </span><span className="md:hidden"> </span>{shown.role}
           </p>
-          <h2 className="text-5xl font-bold text-gray-900">{shown.name}</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">{shown.name}</h2>
         </div>
         {hasImages && <div className="flex-1 min-w-0 shrink" />}
       </SlideLayout>
@@ -231,8 +231,8 @@ function ProjectSlide({ project, images, bullets, imageClass, stat, pt, subType 
     <SlideLayout hasImages={hasImages} pt={pt}>
       <div className={`${hasImages ? "w-[40%] shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
         {/* Invisible spacers — keep layout identical to PersistentHeader so bullets sit in the right spot */}
-        <p className="text-xs invisible select-none">{project.dates} · {project.role}</p>
-        <h2 className="text-5xl font-bold invisible select-none">{project.name}</h2>
+        <p className="text-[10px] md:text-xs invisible select-none">{project.dates} · {project.role}</p>
+        <h2 className="text-4xl md:text-5xl font-bold invisible select-none">{project.name}</h2>
 
         {/* Bullets and stat — these animate with the slide */}
         <div className="space-y-3 !mt-12">
