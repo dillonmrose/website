@@ -51,7 +51,7 @@ const projects: Project[] = [
       ],
     ],
     slideImageClass: [
-      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] -translate-y-[5vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] translate-y-[20vh] md:-translate-y-[5vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
       "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     ],
   },
