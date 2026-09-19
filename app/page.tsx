@@ -250,6 +250,27 @@ export default function HomePage() {
     return () => window.removeEventListener("wheel", onWheel);
   }, [current, goTo]);
 
+  const touchStartY = useRef<number | null>(null);
+
+  useEffect(() => {
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY;
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (touchStartY.current === null) return;
+      const delta = touchStartY.current - e.changedTouches[0].clientY;
+      if (Math.abs(delta) < 50) return;
+      goTo(current + (delta > 0 ? 1 : -1));
+      touchStartY.current = null;
+    };
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [current, goTo]);
+
   const slideState = (i: number): SlideState =>
     i === current ? "active" : i < current ? "above" : "below";
 
