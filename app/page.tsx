@@ -10,25 +10,27 @@ interface Project {
   bullets: string[];
   imageGroups: string[][];
   slideBullets?: (string[] | null)[];
+  slideImageClass?: (string | null)[];
 }
 
 const projects: Project[] = [
   {
-    name: "Microsoft Copilot",
+    name: "Copilot",
     role: "Principal Software Engineer",
     dates: "2023 – Present",
-    stat: "~7M daily active users",
+    stat: "400M+ monthly active users",
     bullets: [
       "Designed Turn 0 Prompt Suggestions, initiating ~3% of all sessions",
       "Built Teaching Moments — 10+ onboarding tutorials that upsell the paid tier",
       "Cut commit-to-production from 2 weeks to 3 days by rearchitecting deployment",
       "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
     ],
-    imageGroups: [["/Copilot.png"], ["/Copilot2.png"]],
+    imageGroups: [["/Copilot2.png"], ["/Copilot.png"]],
+    slideImageClass: ["max-w-full h-auto max-h-[55vh] scale-[1.25] origin-center", null],
   },
   {
-    name: "Play My Emails",
-    role: "Senior Software Engineer, Cortana",
+    name: "Cortana",
+    role: "Senior Software Engineer",
     dates: "2017 – 2023",
     stat: "1M+ monthly active users",
     bullets: [
@@ -38,10 +40,11 @@ const projects: Project[] = [
       "Added variable playback speed based on user panel feedback",
     ],
     imageGroups: [["/PME1.png", "/PME2.png"]],
+    slideImageClass: ["max-w-full h-auto max-h-[55vh] scale-[0.9] origin-center"],
   },
   {
-    name: "Offline Maps",
-    role: "Software Engineer II, Microsoft Maps",
+    name: "Microsoft Maps",
+    role: "Software Engineer II",
     dates: "2016 – 2017",
     bullets: [
       "Rearchitected Bing's online search stack to run fully offline inside Windows Maps",
@@ -50,14 +53,18 @@ const projects: Project[] = [
     imageGroups: [["/OfflineMaps.png"]],
   },
   {
-    name: "Bing Local Search",
-    role: "Software Engineer, Bing",
+    name: "Bing",
+    role: "Software Engineer",
     dates: "2014 – 2016",
     bullets: [
       "Optimized ML models in the Bing Local Search stack — one of the highest ad revenue verticals",
       "Built a rule-based classifier for head queries, reducing latency and cost",
     ],
     imageGroups: [["/BingLocalSearch.png"], ["/BingMaps.png"]],
+    slideImageClass: [
+      "max-w-full h-auto max-h-[55vh] [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[55vh] [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+    ],
     slideBullets: [
       null,
       ["Defined the technique for selecting which point of interest icons to show at various zoom levels of the map"],
@@ -72,6 +79,7 @@ interface FlatSlide {
   project: Project;
   images: string[];
   bullets: string[];
+  imageClass: string;
 }
 
 const flatSlides: FlatSlide[] = projects.flatMap((project) =>
@@ -80,6 +88,7 @@ const flatSlides: FlatSlide[] = projects.flatMap((project) =>
     project,
     images,
     bullets: project.slideBullets?.[gi] ?? project.bullets,
+    imageClass: project.slideImageClass?.[gi] ?? "max-w-full h-auto max-h-[55vh]",
   }))
 );
 
@@ -153,7 +162,7 @@ function Slide({ children, state }: { children: React.ReactNode; state: SlideSta
   );
 }
 
-function ProjectSlide({ project, images, bullets }: FlatSlide) {
+function ProjectSlide({ project, images, bullets, imageClass }: FlatSlide) {
   const hasImages = images.length > 0;
 
   return (
@@ -184,7 +193,7 @@ function ProjectSlide({ project, images, bullets }: FlatSlide) {
               <img
                 src={src}
                 alt={project.name}
-                className="max-w-full h-auto max-h-[55vh] rounded-xl"
+                className={`${imageClass} rounded-xl`}
               />
             </div>
           ))}
@@ -251,7 +260,7 @@ export default function HomePage() {
       {/* Project slides */}
       {flatSlides.map((slide, i) => (
         <Slide key={slide.key} state={slideState(i + 1)}>
-          <ProjectSlide project={slide.project} images={slide.images} bullets={slide.bullets} />
+          <ProjectSlide project={slide.project} images={slide.images} bullets={slide.bullets} imageClass={slide.imageClass} />
         </Slide>
       ))}
 
