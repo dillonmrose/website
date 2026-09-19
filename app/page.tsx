@@ -83,20 +83,69 @@ const flatSlides: FlatSlide[] = projects.flatMap((project) =>
   }))
 );
 
-function Slide({ children, state }: { children: React.ReactNode; state: SlideState }) {
+// Shared layout wrapper — used by both the persistent header and each slide.
+// Uses a fixed pt-[30vh] so the heading always lands at the same pixel,
+// regardless of how many bullets are below it.
+function SlideLayout({ hasImages, children }: { hasImages: boolean; children: React.ReactNode }) {
+  return (
+    <div className="absolute inset-0 w-[70%] mx-auto px-8 pt-[30vh]">
+      <div className={`flex gap-12 items-start w-full ${!hasImages ? "justify-center" : ""}`}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// Renders the heading + meta visibly, fades only on section change.
+function PersistentHeader({ project }: { project: Project | null }) {
+  const [shown, setShown] = useState(project);
+  const [opacity, setOpacity] = useState(project ? 1 : 0);
+
+  useEffect(() => {
+    if (project?.name === shown?.name) return;
+    setOpacity(0);
+    const t = setTimeout(() => {
+      setShown(project);
+      setOpacity(project ? 1 : 0);
+    }, 350);
+    return () => clearTimeout(t);
+  }, [project, shown?.name]);
+
+  if (!shown) return null;
+
+  const hasImages = (shown.imageGroups[0]?.length ?? 0) > 0;
+
   return (
     <div
-      className="absolute inset-0 transition-all duration-700 ease-in-out"
+      className="absolute inset-0 pointer-events-none z-10"
+      style={{ transition: "opacity 350ms ease-in-out", opacity }}
+    >
+      <SlideLayout hasImages={hasImages}>
+        <div className={`${hasImages ? "flex-1" : "max-w-2xl"} space-y-5 min-w-0`}>
+          <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
+            {shown.dates} · {shown.role}
+          </p>
+          <h2 className="text-5xl font-bold text-gray-900">{shown.name}</h2>
+        </div>
+        {hasImages && <div className="flex-1 min-w-0" />}
+      </SlideLayout>
+    </div>
+  );
+}
+
+function Slide({ children, state }: { children: React.ReactNode; state: SlideState }) {
+  const active = state === "active";
+  return (
+    <div
+      className="absolute inset-0"
       style={{
-        opacity: state === "active" ? 1 : 0,
-        transform:
-          state === "active"
-            ? "translateY(0)"
-            : state === "above"
-            ? "translateY(-48px)"
-            : "translateY(48px)",
-        pointerEvents: state === "active" ? "auto" : "none",
-        zIndex: state === "active" ? 1 : 0,
+        opacity: active ? 1 : 0,
+        transform: active ? "translateY(0)" : state === "above" ? "translateY(-48px)" : "translateY(48px)",
+        transition: active
+          ? "opacity 600ms ease-in-out, transform 600ms ease-in-out"
+          : "opacity 300ms ease-in, transform 300ms ease-in",
+        pointerEvents: active ? "auto" : "none",
+        zIndex: active ? 1 : 0,
       }}
     >
       {children}
@@ -108,45 +157,40 @@ function ProjectSlide({ project, images, bullets }: FlatSlide) {
   const hasImages = images.length > 0;
 
   return (
-    <div className="h-full flex items-center w-[70%] mx-auto px-8">
-      <div className={`flex gap-12 items-center w-full ${!hasImages ? "justify-center" : ""}`}>
+    <SlideLayout hasImages={hasImages}>
+      <div className={`${hasImages ? "flex-1" : "max-w-2xl"} space-y-5 min-w-0`}>
+        {/* Invisible spacers — keep layout identical to PersistentHeader so bullets sit in the right spot */}
+        <p className="text-xs invisible select-none">{project.dates} · {project.role}</p>
+        <h2 className="text-5xl font-bold invisible select-none">{project.name}</h2>
 
-        {/* Left: text */}
-        <div className={`${hasImages ? "flex-1" : "max-w-2xl"} space-y-5 min-w-0`}>
-          <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-            {project.dates} · {project.role}
-          </p>
-          <h2 className="text-5xl font-bold text-gray-900">{project.name}</h2>
-          <div className="space-y-3">
-            {bullets.map((bullet) => (
-              <div key={bullet} className="flex gap-3 text-gray-600">
-                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
-                <p className="leading-relaxed">{bullet}</p>
-              </div>
-            ))}
-          </div>
-          {project.stat && (
-            <p className="text-3xl font-bold text-gray-900">{project.stat}</p>
-          )}
+        {/* Bullets and stat — these animate with the slide */}
+        <div className="space-y-3 !mt-12">
+          {bullets.map((bullet) => (
+            <div key={bullet} className="flex gap-3 text-gray-600">
+              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
+              <p className="leading-relaxed">{bullet}</p>
+            </div>
+          ))}
         </div>
-
-        {/* Right: images */}
-        {hasImages && (
-          <div className="flex-1 flex gap-3 items-center min-w-0">
-            {images.map((src) => (
-              <div key={src} className="flex-1 min-w-0 flex justify-center">
-                <img
-                  src={src}
-                  alt={project.name}
-                  className="max-w-full h-auto max-h-[55vh] rounded-xl"
-                />
-              </div>
-            ))}
-          </div>
+        {project.stat && (
+          <p className="text-3xl font-bold text-gray-900">{project.stat}</p>
         )}
-
       </div>
-    </div>
+
+      {hasImages && (
+        <div className="flex-1 flex gap-3 items-center min-w-0">
+          {images.map((src) => (
+            <div key={src} className="flex-1 min-w-0 flex justify-center">
+              <img
+                src={src}
+                alt={project.name}
+                className="max-w-full h-auto max-h-[55vh] rounded-xl"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </SlideLayout>
   );
 }
 
@@ -154,6 +198,8 @@ export default function HomePage() {
   const [current, setCurrent] = useState(0);
   const locked = useRef(false);
   const total = 1 + flatSlides.length;
+
+  const currentProject = current === 0 ? null : flatSlides[current - 1].project;
 
   const goTo = useCallback(
     (idx: number) => {
@@ -181,6 +227,9 @@ export default function HomePage() {
   return (
     <div className="fixed inset-0 overflow-hidden" style={{ top: "56px" }}>
 
+      {/* Persistent heading — stays put within a section, fades on section change */}
+      <PersistentHeader project={currentProject} />
+
       {/* Hero */}
       <Slide state={slideState(0)}>
         <div className="h-full flex flex-col justify-center max-w-4xl mx-auto px-6">
@@ -202,7 +251,7 @@ export default function HomePage() {
       {/* Project slides */}
       {flatSlides.map((slide, i) => (
         <Slide key={slide.key} state={slideState(i + 1)}>
-          <ProjectSlide {...slide} />
+          <ProjectSlide project={slide.project} images={slide.images} bullets={slide.bullets} />
         </Slide>
       ))}
 
@@ -210,7 +259,7 @@ export default function HomePage() {
       {current < total - 1 && (
         <button
           onClick={() => goTo(current + 1)}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-300 hover:text-gray-600 transition-colors animate-bounce"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-300 hover:text-gray-600 transition-colors animate-bounce z-20"
           aria-label="Next slide"
         >
           <span className="text-xs tracking-widest uppercase">Scroll</span>
@@ -221,7 +270,7 @@ export default function HomePage() {
       )}
 
       {/* Slide indicators */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
         {Array.from({ length: total }).map((_, i) => (
           <button
             key={i}
