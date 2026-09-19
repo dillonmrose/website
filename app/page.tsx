@@ -22,8 +22,8 @@ const projects: Project[] = [
     name: "Copilot",
     role: "Principal Software Engineer",
     dates: "2023 – Present",
-    stat: "From 0 to 400M+ monthly active users",
-    slideStat: ["From 0 to 400M+ monthly active users", null],
+    stat: "From 0 to 40M+ weekly active users",
+    slideStat: ["From 0 to 40M+ weekly active users", null],
     bullets: [
       "Designed Turn 0 Prompt Suggestions, initiating ~3% of all sessions",
       "Built Teaching Moments — 10+ onboarding tutorials that upsell the paid tier",
@@ -60,7 +60,7 @@ const projects: Project[] = [
     name: "Cortana",
     role: "Senior Software Engineer",
     dates: "2017 – 2023",
-    stat: "From 0 to 1M+ monthly active users",
+    stat: "From 0 to 1M+ weekly active users",
     bullets: [
       "Incubated the feature from scratch and grew it to 1M monthly active users",
       "Led a team of 5 engineers through a full service rewrite",
@@ -326,7 +326,7 @@ export default function HomePage() {
       const t = setTimeout(() => {
         locked.current = false;
         goTo(current + lastDirection.current);
-      }, 750);
+      }, 1100);
       return () => clearTimeout(t);
     }
   }, [current, activeSlides, goTo]);
