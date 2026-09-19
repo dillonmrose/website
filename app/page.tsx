@@ -31,7 +31,7 @@ const projects: Project[] = [
       "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
     ],
     imageGroups: [["/Copilot.png"], ["/Copilot2.png"]],
-    slidePt: ["pt-[22vh] md:pt-[30vh]", "pt-[22vh] md:pt-[30vh]"],
+    slidePt: ["pt-[17vh] md:pt-[30vh]", "pt-[17vh] md:pt-[30vh]"],
     slideBullets: [
       [
         "One of the original members of the 10-engineer team that built the Copilot client app from scratch",
@@ -401,19 +401,21 @@ export default function HomePage() {
         </button>
       )}
 
-      {/* Slide indicators */}
-      <div className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 flex-col gap-2 z-20">
-        {Array.from({ length: total }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-              i === current ? "bg-gray-900 scale-150" : "bg-gray-300 hover:bg-gray-500"
-            }`}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
+      {/* Slide indicators — desktop only, always based on flatSlides (no separate image dots) */}
+      {!isMobile && (
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
+          {Array.from({ length: 1 + flatSlides.length }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                i === current ? "bg-gray-900 scale-150" : "bg-gray-300 hover:bg-gray-500"
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
     </div>
   );
