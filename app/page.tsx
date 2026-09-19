@@ -126,7 +126,7 @@ const flatSlides: FlatSlide[] = projects.flatMap((project) =>
 // regardless of how many bullets are below it.
 function SlideLayout({ hasImages, children }: { hasImages: boolean; children: React.ReactNode }) {
   return (
-    <div className="absolute inset-0 w-[70%] mx-auto px-8 pt-[30vh]">
+    <div className="absolute inset-0 w-[90%] md:w-[70%] mx-auto px-4 md:px-8 pt-[30vh]">
       <div className={`flex gap-12 items-start w-full ${!hasImages ? "justify-center" : ""}`}>
         {children}
       </div>

@@ -9,8 +9,8 @@ const navLinks = [
 
 export function TopNav() {
   return (
-    <header className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm border-b border-gray-100">
-      <div className="w-[70%] mx-auto px-8 h-14 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+      <div className="w-[90%] md:w-[70%] mx-auto px-4 md:px-8 h-14 flex items-center justify-between">
         <Link href="/" className="font-semibold text-gray-900 hover:text-gray-500 transition-colors">
           Dillon Rose
         </Link>

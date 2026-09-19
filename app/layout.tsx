@@ -20,7 +20,7 @@ export default function RootLayout({
       <html lang="en" className={inter.className}>
         <body className="antialiased text-gray-900 bg-white">
           <TopNav />
-          <main className="max-w-4xl mx-auto px-6 py-10">
+          <main className="max-w-4xl mx-auto px-6 py-10 pt-24">
             {children}
           </main>
         </body>
