@@ -14,6 +14,7 @@ interface Project {
   slideBullets?: (BulletItem[] | null)[];
   slideImageClass?: (string | null)[];
   slideStat?: (string | null)[];
+  slidePt?: (string | null)[];
 }
 
 const projects: Project[] = [
@@ -30,6 +31,7 @@ const projects: Project[] = [
       "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
     ],
     imageGroups: [["/Copilot.png"], ["/Copilot2.png"]],
+    slidePt: ["pt-[22vh] md:pt-[30vh]", "pt-[22vh] md:pt-[30vh]"],
     slideBullets: [
       [
         "One of the original members of the 10-engineer team that built the Copilot client app from scratch",
@@ -108,6 +110,7 @@ interface FlatSlide {
   bullets: BulletItem[];
   imageClass: string;
   stat: string | null;
+  pt: string;
   subType?: "image" | "text";
 }
 
@@ -119,6 +122,7 @@ const flatSlides: FlatSlide[] = projects.flatMap((project) =>
     bullets: project.slideBullets?.[gi] ?? project.bullets,
     imageClass: project.slideImageClass?.[gi] ?? "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     stat: project.slideStat ? (project.slideStat[gi] ?? null) : (project.stat ?? null),
+    pt: project.slidePt?.[gi] ?? "pt-[13vh] md:pt-[30vh]",
   }))
 );
 
@@ -141,9 +145,9 @@ function useIsMobile() {
 // Shared layout wrapper — used by both the persistent header and each slide.
 // Uses a fixed pt-[30vh] so the heading always lands at the same pixel,
 // regardless of how many bullets are below it.
-function SlideLayout({ hasImages, children }: { hasImages: boolean; children: React.ReactNode }) {
+function SlideLayout({ hasImages, pt = "pt-[13vh] md:pt-[30vh]", children }: { hasImages: boolean; pt?: string; children: React.ReactNode }) {
   return (
-    <div className="absolute inset-0 w-[90%] md:w-[70%] mx-auto px-4 md:px-8 pt-[13vh] md:pt-[30vh]">
+    <div className={`absolute inset-0 w-[90%] md:w-[70%] mx-auto px-4 md:px-8 ${pt}`}>
       <div className={`flex gap-12 items-start w-full ${!hasImages ? "justify-center" : ""}`}>
         {children}
       </div>
@@ -208,7 +212,7 @@ function Slide({ children, state }: { children: React.ReactNode; state: SlideSta
   );
 }
 
-function ProjectSlide({ project, images, bullets, imageClass, stat, subType }: Omit<FlatSlide, "key">) {
+function ProjectSlide({ project, images, bullets, imageClass, stat, pt, subType }: Omit<FlatSlide, "key">) {
   if (subType === "image") {
     return (
       <div className="absolute inset-0 flex items-center justify-center px-6">
@@ -224,7 +228,7 @@ function ProjectSlide({ project, images, bullets, imageClass, stat, subType }: O
   const hasImages = subType === "text" ? false : images.length > 0;
 
   return (
-    <SlideLayout hasImages={hasImages}>
+    <SlideLayout hasImages={hasImages} pt={pt}>
       <div className={`${hasImages ? "w-[40%] shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
         {/* Invisible spacers — keep layout identical to PersistentHeader so bullets sit in the right spot */}
         <p className="text-xs invisible select-none">{project.dates} · {project.role}</p>
@@ -323,7 +327,7 @@ export default function HomePage() {
       const t = setTimeout(() => {
         locked.current = false;
         goTo(current + lastDirection.current);
-      }, 500);
+      }, 750);
       return () => clearTimeout(t);
     }
   }, [current, activeSlides, goTo]);
@@ -379,7 +383,7 @@ export default function HomePage() {
       {/* Project slides */}
       {activeSlides.map((slide, i) => (
         <Slide key={slide.key} state={slideState(i + 1)}>
-          <ProjectSlide project={slide.project} images={slide.images} bullets={slide.bullets} imageClass={slide.imageClass} stat={slide.stat} subType={slide.subType} />
+          <ProjectSlide project={slide.project} images={slide.images} bullets={slide.bullets} imageClass={slide.imageClass} stat={slide.stat} pt={slide.pt} subType={slide.subType} />
         </Slide>
       ))}
 
