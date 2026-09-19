@@ -36,7 +36,7 @@ const projects: Project[] = [
         "Architected subscription entitlement and flighting infrastructure",
       ],
       [
-        "Cut commit-to-production from 2 weeks to 3 days by rearchitecting deployment",
+        "Rearchitected the deployment mechanism, cutting commit-to-production from 2 weeks to 3 days and enabling per-user version control via feature flags — any version deployable to any user or group within 15 minutes",
         "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
       ],
     ],
