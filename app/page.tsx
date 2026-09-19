@@ -108,6 +108,7 @@ interface FlatSlide {
   bullets: BulletItem[];
   imageClass: string;
   stat: string | null;
+  subType?: "image" | "text";
 }
 
 const flatSlides: FlatSlide[] = projects.flatMap((project) =>
@@ -120,6 +121,22 @@ const flatSlides: FlatSlide[] = projects.flatMap((project) =>
     stat: project.slideStat ? (project.slideStat[gi] ?? null) : (project.stat ?? null),
   }))
 );
+
+const mobileFlatSlides: FlatSlide[] = flatSlides.flatMap((slide) => [
+  { ...slide, key: `${slide.key}-img`, subType: "image" as const },
+  { ...slide, key: `${slide.key}-txt`, subType: "text" as const },
+]);
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+  return isMobile;
+}
 
 // Shared layout wrapper — used by both the persistent header and each slide.
 // Uses a fixed pt-[30vh] so the heading always lands at the same pixel,
@@ -191,8 +208,20 @@ function Slide({ children, state }: { children: React.ReactNode; state: SlideSta
   );
 }
 
-function ProjectSlide({ project, images, bullets, imageClass, stat }: Omit<FlatSlide, "key">) {
-  const hasImages = images.length > 0;
+function ProjectSlide({ project, images, bullets, imageClass, stat, subType }: Omit<FlatSlide, "key">) {
+  if (subType === "image") {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center px-6">
+        <img
+          src={images[0]}
+          alt={project.name}
+          className={imageClass.replace(/max-h-\[40vh\]/, "max-h-[65vh]")}
+        />
+      </div>
+    );
+  }
+
+  const hasImages = subType === "text" ? false : images.length > 0;
 
   return (
     <SlideLayout hasImages={hasImages}>
@@ -255,9 +284,13 @@ function ProjectSlide({ project, images, bullets, imageClass, stat }: Omit<FlatS
 export default function HomePage() {
   const [current, setCurrent] = useState(0);
   const locked = useRef(false);
-  const total = 1 + flatSlides.length;
+  const isMobile = useIsMobile();
+  const activeSlides = isMobile ? mobileFlatSlides : flatSlides;
+  const total = 1 + activeSlides.length;
 
-  const currentProject = current === 0 ? null : flatSlides[current - 1].project;
+  const currentProject = current === 0 ? null : activeSlides[current - 1].project;
+
+  useEffect(() => { setCurrent(0); }, [isMobile]);
 
   const goTo = useCallback(
     (idx: number) => {
@@ -278,6 +311,20 @@ export default function HomePage() {
     window.addEventListener("wheel", onWheel, { passive: true });
     return () => window.removeEventListener("wheel", onWheel);
   }, [current, goTo]);
+
+  // Auto-advance image-only slides on mobile
+  useEffect(() => {
+    const slideIdx = current - 1;
+    if (slideIdx < 0) return;
+    const slide = activeSlides[slideIdx];
+    if (slide?.subType === "image") {
+      const t = setTimeout(() => {
+        locked.current = false;
+        goTo(current + 1);
+      }, 500);
+      return () => clearTimeout(t);
+    }
+  }, [current, activeSlides, goTo]);
 
   const touchStartY = useRef<number | null>(null);
 
@@ -328,9 +375,9 @@ export default function HomePage() {
       </Slide>
 
       {/* Project slides */}
-      {flatSlides.map((slide, i) => (
+      {activeSlides.map((slide, i) => (
         <Slide key={slide.key} state={slideState(i + 1)}>
-          <ProjectSlide project={slide.project} images={slide.images} bullets={slide.bullets} imageClass={slide.imageClass} stat={slide.stat} />
+          <ProjectSlide project={slide.project} images={slide.images} bullets={slide.bullets} imageClass={slide.imageClass} stat={slide.stat} subType={slide.subType} />
         </Slide>
       ))}
 
@@ -349,7 +396,7 @@ export default function HomePage() {
       )}
 
       {/* Slide indicators */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
+      <div className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 flex-col gap-2 z-20">
         {Array.from({ length: total }).map((_, i) => (
           <button
             key={i}
