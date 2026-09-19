@@ -11,6 +11,7 @@ interface Project {
   imageGroups: string[][];
   slideBullets?: (string[] | null)[];
   slideImageClass?: (string | null)[];
+  slideStat?: (string | null)[];
 }
 
 const projects: Project[] = [
@@ -18,24 +19,37 @@ const projects: Project[] = [
     name: "Copilot",
     role: "Principal Software Engineer",
     dates: "2023 – Present",
-    stat: "400M+ monthly active users",
+    stat: "From 0 to 400M+ monthly active users",
+    slideStat: ["From 0 to 400M+ monthly active users", null],
     bullets: [
       "Designed Turn 0 Prompt Suggestions, initiating ~3% of all sessions",
       "Built Teaching Moments — 10+ onboarding tutorials that upsell the paid tier",
       "Cut commit-to-production from 2 weeks to 3 days by rearchitecting deployment",
       "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
     ],
-    imageGroups: [["/Copilot2.png"], ["/Copilot.png"]],
+    imageGroups: [["/Copilot.png"], ["/Copilot2.png"]],
+    slideBullets: [
+      [
+        "One of the original members of the 10-engineer team that built the Copilot client app from scratch",
+        "Championed full stack solution for Turn 0 Prompt Suggestions",
+        "Created Teaching Moments - 10+ guided tutorials that onboard users to Copilot's key features",
+        "Architected subscription entitlement and flighting infrastructure",
+      ],
+      [
+        "Cut commit-to-production from 2 weeks to 3 days by rearchitecting deployment",
+        "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
+      ],
+    ],
     slideImageClass: [
-      "max-w-full h-auto max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
       "max-w-full h-auto max-h-[55vh] -translate-y-[5vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     ],
   },
   {
     name: "Cortana",
     role: "Senior Software Engineer",
     dates: "2017 – 2023",
-    stat: "1M+ monthly active users",
+    stat: "From 0 to 1M+ monthly active users",
     bullets: [
       "Incubated the feature from scratch and grew it to 1M monthly active users",
       "Led a team of 5 engineers through a full service rewrite",
@@ -84,6 +98,7 @@ interface FlatSlide {
   images: string[];
   bullets: string[];
   imageClass: string;
+  stat: string | null;
 }
 
 const flatSlides: FlatSlide[] = projects.flatMap((project) =>
@@ -93,6 +108,7 @@ const flatSlides: FlatSlide[] = projects.flatMap((project) =>
     images,
     bullets: project.slideBullets?.[gi] ?? project.bullets,
     imageClass: project.slideImageClass?.[gi] ?? "max-w-full h-auto max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+    stat: project.slideStat ? (project.slideStat[gi] ?? null) : (project.stat ?? null),
   }))
 );
 
@@ -166,7 +182,7 @@ function Slide({ children, state }: { children: React.ReactNode; state: SlideSta
   );
 }
 
-function ProjectSlide({ project, images, bullets, imageClass }: FlatSlide) {
+function ProjectSlide({ project, images, bullets, imageClass, stat }: FlatSlide) {
   const hasImages = images.length > 0;
 
   return (
@@ -185,8 +201,8 @@ function ProjectSlide({ project, images, bullets, imageClass }: FlatSlide) {
             </div>
           ))}
         </div>
-        {project.stat && (
-          <p className="text-3xl font-bold text-gray-900">{project.stat}</p>
+        {stat && (
+          <p className="text-3xl font-bold text-gray-900">{stat}</p>
         )}
       </div>
 
@@ -264,7 +280,7 @@ export default function HomePage() {
       {/* Project slides */}
       {flatSlides.map((slide, i) => (
         <Slide key={slide.key} state={slideState(i + 1)}>
-          <ProjectSlide project={slide.project} images={slide.images} bullets={slide.bullets} imageClass={slide.imageClass} />
+          <ProjectSlide project={slide.project} images={slide.images} bullets={slide.bullets} imageClass={slide.imageClass} stat={slide.stat} />
         </Slide>
       ))}
 
