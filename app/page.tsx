@@ -27,7 +27,7 @@ const projects: Project[] = [
     ],
     imageGroups: [["/Copilot2.png"], ["/Copilot.png"]],
     slideImageClass: [
-      "max-w-full h-auto max-h-[55vh] scale-[1.25] origin-center rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
       "max-w-full h-auto max-h-[55vh] -translate-y-[5vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     ],
   },
@@ -134,13 +134,13 @@ function PersistentHeader({ project }: { project: Project | null }) {
       style={{ transition: "opacity 350ms ease-in-out", opacity }}
     >
       <SlideLayout hasImages={hasImages}>
-        <div className={`${hasImages ? "flex-1" : "max-w-2xl"} space-y-5 min-w-0`}>
+        <div className={`${hasImages ? "w-[40%] shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
           <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
             {shown.dates} · {shown.role}
           </p>
           <h2 className="text-5xl font-bold text-gray-900">{shown.name}</h2>
         </div>
-        {hasImages && <div className="flex-1 min-w-0" />}
+        {hasImages && <div className="flex-1 min-w-0 shrink" />}
       </SlideLayout>
     </div>
   );
@@ -171,7 +171,7 @@ function ProjectSlide({ project, images, bullets, imageClass }: FlatSlide) {
 
   return (
     <SlideLayout hasImages={hasImages}>
-      <div className={`${hasImages ? "flex-1" : "max-w-2xl"} space-y-5 min-w-0`}>
+      <div className={`${hasImages ? "w-[40%] shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
         {/* Invisible spacers — keep layout identical to PersistentHeader so bullets sit in the right spot */}
         <p className="text-xs invisible select-none">{project.dates} · {project.role}</p>
         <h2 className="text-5xl font-bold invisible select-none">{project.name}</h2>
