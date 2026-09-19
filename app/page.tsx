@@ -28,7 +28,7 @@ const projects: Project[] = [
     imageGroups: [["/Copilot2.png"], ["/Copilot.png"]],
     slideImageClass: [
       "max-w-full h-auto max-h-[55vh] scale-[1.25] origin-center rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
-      null,
+      "max-w-full h-auto max-h-[55vh] -translate-y-[5vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     ],
   },
   {
@@ -43,7 +43,7 @@ const projects: Project[] = [
       "Added variable playback speed based on user panel feedback",
     ],
     imageGroups: [["/PME1.png", "/PME2.png"]],
-    slideImageClass: ["max-w-full h-auto max-h-[55vh] scale-[0.9] origin-center rounded-xl [filter:drop-shadow(0_18px_16px_rgb(0_0_0/0.22))_drop-shadow(0_-6px_8px_rgb(0_0_0/0.14))]"],
+    slideImageClass: ["max-w-full h-auto max-h-[55vh] scale-[0.9] -translate-y-[10vh] origin-center rounded-xl [filter:drop-shadow(0_18px_16px_rgb(0_0_0/0.22))_drop-shadow(0_-6px_8px_rgb(0_0_0/0.14))]"],
   },
   {
     name: "Microsoft Maps",
@@ -54,7 +54,7 @@ const projects: Project[] = [
       "Defined the strategy for selecting which locations and businesses to download",
     ],
     imageGroups: [["/OfflineMaps.png"]],
-    slideImageClass: ["max-w-full h-auto max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]"],
+    slideImageClass: ["max-w-full h-auto max-h-[55vh] -translate-y-[5vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]"],
   },
   {
     name: "Bing",
@@ -66,8 +66,8 @@ const projects: Project[] = [
     ],
     imageGroups: [["/BingLocalSearch.png"], ["/BingMaps.png"]],
     slideImageClass: [
-      "max-w-full h-auto max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
-      "max-w-full h-auto max-h-[55vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[55vh] -translate-y-[7vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
+      "max-w-full h-auto max-h-[55vh] -translate-y-[7vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     ],
     slideBullets: [
       null,
