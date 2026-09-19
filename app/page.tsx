@@ -9,6 +9,7 @@ interface Project {
   stat?: string;
   bullets: string[];
   imageGroups: string[][];
+  slideBullets?: (string[] | null)[];
 }
 
 const projects: Project[] = [
@@ -53,10 +54,14 @@ const projects: Project[] = [
     role: "Software Engineer, Bing",
     dates: "2014 – 2016",
     bullets: [
-      "Optimized classifier and ranker in the Bing Local Search stack",
+      "Optimized ML models in the Bing Local Search stack — one of the highest ad revenue verticals",
       "Built a rule-based classifier for head queries, reducing latency and cost",
     ],
-    imageGroups: [["/BingMaps.png", "/BingLocalSearch.png"]],
+    imageGroups: [["/BingLocalSearch.png"], ["/BingMaps.png"]],
+    slideBullets: [
+      null,
+      ["Defined the technique for selecting which point of interest icons to show at various zoom levels of the map"],
+    ],
   },
 ];
 
@@ -66,7 +71,7 @@ interface FlatSlide {
   key: string;
   project: Project;
   images: string[];
-  isFirst: boolean;
+  bullets: string[];
 }
 
 const flatSlides: FlatSlide[] = projects.flatMap((project) =>
@@ -74,7 +79,7 @@ const flatSlides: FlatSlide[] = projects.flatMap((project) =>
     key: `${project.name}-${gi}`,
     project,
     images,
-    isFirst: gi === 0,
+    bullets: project.slideBullets?.[gi] ?? project.bullets,
   }))
 );
 
@@ -99,55 +104,46 @@ function Slide({ children, state }: { children: React.ReactNode; state: SlideSta
   );
 }
 
-function ProjectSlide({ project, images, isFirst }: FlatSlide) {
+function ProjectSlide({ project, images, bullets }: FlatSlide) {
+  const hasImages = images.length > 0;
+
   return (
     <div className="h-full flex items-center w-[70%] mx-auto px-8">
-      <div className="flex gap-12 items-center w-full">
+      <div className={`flex gap-12 items-center w-full ${!hasImages ? "justify-center" : ""}`}>
 
-        {/* Left: text on first slide, stat on continuation */}
-        <div className="flex-1 space-y-5 min-w-0">
-          {isFirst ? (
-            <>
-              <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-                {project.dates} · {project.role}
-              </p>
-              <h2 className="text-5xl font-bold text-gray-900">{project.name}</h2>
-              <div className="space-y-3">
-                {project.bullets.map((bullet) => (
-                  <div key={bullet} className="flex gap-3 text-gray-600">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
-                    <p className="leading-relaxed">{bullet}</p>
-                  </div>
-                ))}
+        {/* Left: text */}
+        <div className={`${hasImages ? "flex-1" : "max-w-2xl"} space-y-5 min-w-0`}>
+          <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
+            {project.dates} · {project.role}
+          </p>
+          <h2 className="text-5xl font-bold text-gray-900">{project.name}</h2>
+          <div className="space-y-3">
+            {bullets.map((bullet) => (
+              <div key={bullet} className="flex gap-3 text-gray-600">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
+                <p className="leading-relaxed">{bullet}</p>
               </div>
-              {project.stat && (
-                <p className="text-3xl font-bold text-gray-900">{project.stat}</p>
-              )}
-            </>
-          ) : (
-            <>
-              <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase">
-                {project.name} — Today
-              </p>
-              {project.stat && (
-                <p className="text-5xl font-bold text-gray-900">{project.stat}</p>
-              )}
-            </>
+            ))}
+          </div>
+          {project.stat && (
+            <p className="text-3xl font-bold text-gray-900">{project.stat}</p>
           )}
         </div>
 
         {/* Right: images */}
-        <div className="flex-1 flex gap-3 items-center min-w-0">
-          {images.map((src) => (
-            <div key={src} className="flex-1 min-w-0 flex justify-center">
-              <img
-                src={src}
-                alt={project.name}
-                className="max-w-full h-auto max-h-[55vh] rounded-xl"
-              />
-            </div>
-          ))}
-        </div>
+        {hasImages && (
+          <div className="flex-1 flex gap-3 items-center min-w-0">
+            {images.map((src) => (
+              <div key={src} className="flex-1 min-w-0 flex justify-center">
+                <img
+                  src={src}
+                  alt={project.name}
+                  className="max-w-full h-auto max-h-[55vh] rounded-xl"
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
       </div>
     </div>
