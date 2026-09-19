@@ -121,7 +121,7 @@ const flatSlides: FlatSlide[] = projects.flatMap((project) =>
     bullets: project.slideBullets?.[gi] ?? project.bullets,
     imageClass: project.slideImageClass?.[gi] ?? "max-w-full h-auto max-h-[40vh] md:max-h-[55vh] -translate-y-[7vh] rounded-xl [filter:drop-shadow(0_10px_8px_rgb(0_0_0/0.08))_drop-shadow(0_-4px_4px_rgb(0_0_0/0.05))]",
     stat: project.slideStat ? (project.slideStat[gi] ?? null) : (project.stat ?? null),
-    pt: project.slidePt?.[gi] ?? "pt-[6vh] md:pt-[30vh]",
+    pt: project.slidePt?.[gi] ?? "pt-[1vh] md:pt-[30vh]",
   }))
 );
 
@@ -144,7 +144,7 @@ function useIsMobile() {
 // Shared layout wrapper — used by both the persistent header and each slide.
 // Uses a fixed pt-[30vh] so the heading always lands at the same pixel,
 // regardless of how many bullets are below it.
-function SlideLayout({ hasImages, pt = "pt-[6vh] md:pt-[30vh]", children }: { hasImages: boolean; pt?: string; children: React.ReactNode }) {
+function SlideLayout({ hasImages, pt = "pt-[1vh] md:pt-[30vh]", children }: { hasImages: boolean; pt?: string; children: React.ReactNode }) {
   return (
     <div className={`absolute inset-0 w-[84%] md:w-[70%] mx-auto px-4 md:px-8 ${pt}`}>
       <div className={`flex gap-12 items-start w-full ${!hasImages ? "justify-center" : ""}`}>
@@ -234,7 +234,7 @@ function ProjectSlide({ project, images, bullets, imageClass, stat, pt, subType 
         <h2 className="text-3xl md:text-5xl font-bold invisible select-none">{project.name}</h2>
 
         {/* Bullets and stat — these animate with the slide */}
-        <div className="space-y-3 !mt-12">
+        <div className="space-y-3 !mt-6 md:!mt-12">
           {bullets.map((bullet, i) => {
             if (typeof bullet === "string") {
               return (
