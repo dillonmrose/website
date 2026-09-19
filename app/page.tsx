@@ -2,14 +2,16 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 
+type BulletItem = string | { text: string; sub: string[] };
+
 interface Project {
   name: string;
   role: string;
   dates: string;
   stat?: string;
-  bullets: string[];
+  bullets: BulletItem[];
   imageGroups: string[][];
-  slideBullets?: (string[] | null)[];
+  slideBullets?: (BulletItem[] | null)[];
   slideImageClass?: (string | null)[];
   slideStat?: (string | null)[];
 }
@@ -31,13 +33,21 @@ const projects: Project[] = [
     slideBullets: [
       [
         "One of the original members of the 10-engineer team that built the Copilot client app from scratch",
-        "Championed full stack solution for Turn 0 Prompt Suggestions",
+        "Architected subscription entitlement and feature flag infrastructure",
+        "Spearheaded full stack solution for Prompt Suggestions. Enabling suggestions enriched with user content (files, people, meetings, etc.) to meet users where they engage with work",
         "Created Teaching Moments - 10+ guided tutorials that onboard users to Copilot's key features",
-        "Architected subscription entitlement and flighting infrastructure",
       ],
       [
-        "Rearchitected the deployment mechanism, cutting commit-to-production from 2 weeks to 3 days and enabling per-user version control via feature flags — any version deployable to any user or group within 15 minutes",
-        "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
+        "Rearchitected the deployment mechanism, cutting commit-to-production from 2 weeks to 3 days and enabling per-user version control via feature flags within 15 minutes",
+        "Lead IC for the Client Infrastructure team: reliability, app load and chat latency, and feature flagging",
+        "Lead agentic development adoption in the client repo",
+        {
+          text: "Led a v-team of 4 to create an autonomous agent fleet",
+          sub: [
+            "Addresses DevOps tasks: feature flag cleanup, flaky E2E tests, test coverage, and accessibility bugs",
+            "Addresses merge conflicts and failed CI for subscribing team members",
+          ],
+        },
       ],
     ],
     slideImageClass: [
@@ -53,8 +63,7 @@ const projects: Project[] = [
     bullets: [
       "Incubated the feature from scratch and grew it to 1M monthly active users",
       "Led a team of 5 engineers through a full service rewrite",
-      "Designed a custom audio streaming protocol for email readouts",
-      "Added variable playback speed based on user panel feedback",
+      "Designed audio streaming protocol for email readouts. Enabled seek and variable playback speed",
     ],
     imageGroups: [["/PME1.png", "/PME2.png"]],
     slideImageClass: ["max-w-full h-auto max-h-[55vh] scale-[0.9] -translate-y-[10vh] origin-center rounded-xl [filter:drop-shadow(0_18px_16px_rgb(0_0_0/0.22))_drop-shadow(0_-6px_8px_rgb(0_0_0/0.14))]"],
@@ -64,7 +73,7 @@ const projects: Project[] = [
     role: "Software Engineer II",
     dates: "2016 – 2017",
     bullets: [
-      "Rearchitected Bing's online search stack to run fully offline inside Windows Maps",
+      "Stripped down and ported Bing's online search stack to run fully offline inside Windows Maps app",
       "Defined the strategy for selecting which locations and businesses to download",
     ],
     imageGroups: [["/OfflineMaps.png"]],
@@ -75,7 +84,7 @@ const projects: Project[] = [
     role: "Software Engineer",
     dates: "2014 – 2016",
     bullets: [
-      "Optimized ML models in the Bing Local Search stack — one of the highest ad revenue verticals",
+      "Optimized ML models in the Bing Local Search stack - one of the highest ad revenue verticals",
       "Built a rule-based classifier for head queries, reducing latency and cost",
     ],
     imageGroups: [["/BingLocalSearch.png"], ["/BingMaps.png"]],
@@ -96,7 +105,7 @@ interface FlatSlide {
   key: string;
   project: Project;
   images: string[];
-  bullets: string[];
+  bullets: BulletItem[];
   imageClass: string;
   stat: string | null;
 }
@@ -194,12 +203,32 @@ function ProjectSlide({ project, images, bullets, imageClass, stat }: Omit<FlatS
 
         {/* Bullets and stat — these animate with the slide */}
         <div className="space-y-3 !mt-12">
-          {bullets.map((bullet) => (
-            <div key={bullet} className="flex gap-3 text-gray-600">
-              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
-              <p className="leading-relaxed">{bullet}</p>
-            </div>
-          ))}
+          {bullets.map((bullet, i) => {
+            if (typeof bullet === "string") {
+              return (
+                <div key={i} className="flex gap-3 text-gray-600">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
+                  <p className="leading-relaxed">{bullet}</p>
+                </div>
+              );
+            }
+            return (
+              <div key={i} className="flex gap-3 text-gray-600">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-gray-300 shrink-0" />
+                <div>
+                  <p className="leading-relaxed">{bullet.text}</p>
+                  <div className="mt-1.5 space-y-1.5 pl-1">
+                    {bullet.sub.map((s, j) => (
+                      <div key={j} className="flex gap-2.5 text-gray-500">
+                        <span className="mt-2 h-1 w-1 rounded-full bg-gray-300 shrink-0" />
+                        <p className="leading-relaxed text-sm">{s}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
         {stat && (
           <p className="text-3xl font-bold text-gray-900">{stat}</p>
