@@ -31,7 +31,6 @@ const projects: Project[] = [
       "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
     ],
     imageGroups: [["/Copilot.png"], ["/Copilot2.png"]],
-    slidePt: ["pt-[17vh] md:pt-[30vh]", "pt-[17vh] md:pt-[30vh]"],
     slideBullets: [
       [
         "One of the original members of the 10-engineer team that built the Copilot client app from scratch",
@@ -180,13 +179,13 @@ function PersistentHeader({ project }: { project: Project | null }) {
       style={{ transition: "opacity 350ms ease-in-out", opacity }}
     >
       <SlideLayout hasImages={hasImages}>
-        <div className={`${hasImages ? "w-[40%] shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
-          <p className="text-[10px] md:text-xs font-semibold tracking-widest text-gray-400 uppercase">
+        <div className={`${hasImages ? "w-full md:w-[40%] md:shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
+          <p className="text-[10px] md:text-xs font-semibold tracking-normal md:tracking-widest text-gray-400 uppercase">
             {shown.dates}<br className="md:hidden" /><span className="hidden md:inline"> · </span><span className="md:hidden"> </span>{shown.role}
           </p>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">{shown.name}</h2>
+          <h2 className="text-3xl md:text-5xl font-bold text-gray-900">{shown.name}</h2>
         </div>
-        {hasImages && <div className="flex-1 min-w-0 shrink" />}
+        {hasImages && <div className="hidden md:block md:flex-1 min-w-0" />}
       </SlideLayout>
     </div>
   );
@@ -229,10 +228,10 @@ function ProjectSlide({ project, images, bullets, imageClass, stat, pt, subType 
 
   return (
     <SlideLayout hasImages={hasImages} pt={pt}>
-      <div className={`${hasImages ? "w-[40%] shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
+      <div className={`${hasImages ? "w-full md:w-[40%] md:shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
         {/* Invisible spacers — keep layout identical to PersistentHeader so bullets sit in the right spot */}
-        <p className="text-[10px] md:text-xs invisible select-none">{project.dates} · {project.role}</p>
-        <h2 className="text-4xl md:text-5xl font-bold invisible select-none">{project.name}</h2>
+        <p className="text-[10px] md:text-xs invisible select-none tracking-normal md:tracking-widest">{project.dates}<br className="md:hidden" /> {project.role}</p>
+        <h2 className="text-3xl md:text-5xl font-bold invisible select-none">{project.name}</h2>
 
         {/* Bullets and stat — these animate with the slide */}
         <div className="space-y-3 !mt-12">
