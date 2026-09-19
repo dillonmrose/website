@@ -182,7 +182,7 @@ function Slide({ children, state }: { children: React.ReactNode; state: SlideSta
   );
 }
 
-function ProjectSlide({ project, images, bullets, imageClass, stat }: FlatSlide) {
+function ProjectSlide({ project, images, bullets, imageClass, stat }: Omit<FlatSlide, "key">) {
   const hasImages = images.length > 0;
 
   return (
