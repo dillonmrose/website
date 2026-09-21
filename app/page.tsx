@@ -326,7 +326,7 @@ export default function HomePage() {
       const t = setTimeout(() => {
         locked.current = false;
         goTo(current + lastDirection.current);
-      }, 1100);
+      }, 1300);
       return () => clearTimeout(t);
     }
   }, [current, activeSlides, goTo]);
