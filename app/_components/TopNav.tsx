@@ -4,7 +4,6 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "Resume", href: "/resume" },
   { label: "Blog", href: "/blog" },
-  { label: "Books", href: "/books" },
 ];
 
 export function TopNav() {

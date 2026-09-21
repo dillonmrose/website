@@ -1,6 +1,8 @@
 import React, { ComponentPropsWithoutRef } from 'react';
 import { Link } from 'next-view-transitions';
 
+type ImageProps = ComponentPropsWithoutRef<'img'>;
+
 type HeadingProps = ComponentPropsWithoutRef<'h1'>;
 type ParagraphProps = ComponentPropsWithoutRef<'p'>;
 type ListProps = ComponentPropsWithoutRef<'ul'>;
@@ -70,6 +72,9 @@ const components = {
       </a>
     );
   },
+  img: ({ src, alt, style, className, ...props }: ImageProps) => (
+    <img src={src} alt={alt} style={{ height: 'auto', ...style }} className={`my-4 rounded ${className ?? 'w-full'}`} {...props} />
+  ),
   blockquote: (props: BlockquoteProps) => (
     <blockquote
       className="border-l-2 border-gray-200 pl-4 text-gray-500 italic my-4"

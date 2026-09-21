@@ -1,0 +1,10 @@
+# Argo
+
+My wife and I run a couple Airbnbs. We self-manage the property with the help of the Property Management Software called Hospitable. We found its infrastructure for managing the cleaners to be completely insufficient. It sends a text to your cleaner for new bookings as they arrive. Please confirm this new cleaning that is in December... My cleaner doesn't care about hearing about a new cleaning in December when it is August. We also have no ability to see the messages. We would receive texts from Hospitable saying the cleaner responded to the text saying "I can't do it". Can't do what? Anyway, we turned off all the texts from Hospitable and ran it ourselves for a while. We would text her every weekend to land on a schedule for the week and send her reminder texts along the way. Small drag on our lives. 
+
+Then a couple months ago, we received our mac mini. Using Claude Code, I built this system we call Argo in an afternoon. Argo manages messaging the cleaner and has automated 99% of the work. It messages the schedule for the next 2 weeks every Sunday. Then Argo sends a reminder per cleaning 2 days ahead, 1 day ahead and day of (per request from the cleaner). It texts from my phone number via iMessage into a thread that contains the cleaner, my wife and I. We see her responses and can address any issues in the thread. Argo optimizes the schedule to group cleanings between the two units on the same day when possible. Initially, I was using Claude to read the cleaner's response texts and alerting me if there were any concerns. In practice, we usually resolved any issues immediately in thread as we were receiving alerts from Argo, so I disabled this piece.
+
+In the end, Argo is comprised of entirely deterministic Python code i.e. Claude Code is not in the loop. Argo easily pays for the Claude Code subscription by itself and anything else I build is upside for me. Crazy to me how much value this tool represents at such a fair price. Arguably, the most powerful tool mankind has ever created for $20/month.
+
+Here is a sample text from Argo:
+<img src="/argo.png" className="w-[80%] md:w-[50%] block mx-auto" />
