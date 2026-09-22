@@ -14,13 +14,15 @@ export const getPosts = (directoryName: string) => {
         const metaPath = path.join(directoryPath, post, 'meta.json');
         let date = '';
         let sortDate = '';
+        let title = '';
         try {
           const meta = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
           date = meta.date ?? '';
           sortDate = meta.sortDate ?? '';
+          title = meta.title ?? '';
         } catch {}
         return {
-          name: post.replaceAll('_', ' ').replace(/\b\w/g, char => char.toUpperCase()).replace('--', ': '),
+          name: title || post.replaceAll('_', ' ').replace(/\b\w/g, char => char.toUpperCase()).replace('--', ': '),
           path: `/${directoryName}/${post}`,
           date,
           sortDate,
