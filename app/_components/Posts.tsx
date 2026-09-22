@@ -21,7 +21,7 @@ export const getPosts = (directoryName: string) => {
         } catch {}
         return {
           name: post.replaceAll('_', ' ').replace(/\b\w/g, char => char.toUpperCase()).replace('--', ': '),
-          path: path.join(directoryName, post),
+          path: `/${directoryName}/${post}`,
           date,
           sortDate,
         };
