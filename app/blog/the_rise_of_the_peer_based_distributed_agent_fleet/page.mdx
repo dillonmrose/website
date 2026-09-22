@@ -1,3 +1,9 @@
-# The Rise of the Peer-based "Cloud" Agent Fleet
+# The Rise of the Peer-based "Distributed" Agent Fleet
 
+I am writing this article to reflect on a specific pattern used to create agent fleets that I have seen pop up at different companies/organizations in the tech industry. My intention is to name the pattern, point out some of the risks in the pattern and provide some best practices for developers to follow. Especially as this agentic CLIs are permeating into non-software industires where developers will have less traditional training in building for durability and saftey.
+
+## The Pattern
 This is the story I heard over and over. Some developer was ready to scale out their software development harness (code, review, prove, verify, babysit). They nailed it for themselves. Upper managment wantsto scale the harness. Company is not ready with a cloud  option. Developer maxes out his dev box and remote dev boxes. Need to scale more. Developer looks to their left and right. "Hey. You people have computers too. Do you mind running this daemon on your machine for me?" A couple months later, you have a quarter of the org running a daemon that is spawing local agent sessions on these dev's machines to do work from a shared pool. One deployed DB to coordinate. But... some bad actor creates a bunch of tasks to nuke your machine and the sytem is not robust against attacks and boom!
+
+## The Risks
+This system is much safer with an intake agent in the flow.
