@@ -1,9 +1,60 @@
 # The Rise of the Peer-based "Distributed" Agent Fleet
 
-I am writing this article to reflect on a specific pattern used to create agent fleets that I have seen pop up at different companies/organizations in the tech industry. My intention is to name the pattern, point out some of the risks in the pattern and provide some best practices for developers to follow. Especially as this agentic CLIs are permeating into non-software industires where developers will have less traditional training in building for durability and saftey.
+I am writing this article to reflect on a specific pattern used to create agent fleets that I have seen pop up across most of the major tech companies. My intention is to name the pattern, point out some of the risks in the pattern and provide some best practices for developers to follow. Especially as agentic CLIs are permeating into non-software industries where those creating these systems will have less traditional training in software development to know about building for durability and safety.
+
+For the non-software developers out there, just point Claude Code at this blog and start asking questions. Explain to me ___. What does he mean when he says ____. Ok, let's build it. You should have a good starting point for your own agent fleet. I am writing this for you, but I am giving it up for free and I value my time.
+
+## The Path
+
+This is the story I have heard over and over. We will track the story of a developer named Bob.
+1. Developer starts using Claude Code.
+2. Bob realizes he can automate their entire job.
+3. Bob starts building out skills for non-interactive Claude Code sessions to perform the main processes of software development (coding, validation, review, fix CI, merge).
+4. Bob writes a daemon to pull tasks off a queue and monitor PRs to trigger Claude Code sessions.
+5. Upper management see Bob going infinite and wants to scale the harness, but company is not ready with a cloud option.
+6. Bob agrees to use this system to oversee work of their peers. Bob maxes out his dev box and remote dev boxes. Bob needs to scale more.
+7. Bob looks to his left and right. "Hey. You people have computers too. Do you mind running this daemon on your machine for me?"
+8. Bob creates a "distributed" agent fleet out of his peers machines.
+
+<img src="/PeerCloud.png" className="w-[100%] block mx-auto rounded-2xl" />
 
 ## The Pattern
-This is the story I heard over and over. Some developer was ready to scale out their software development harness (code, review, prove, verify, babysit). They nailed it for themselves. Upper managment wantsto scale the harness. Company is not ready with a cloud  option. Developer maxes out his dev box and remote dev boxes. Need to scale more. Developer looks to their left and right. "Hey. You people have computers too. Do you mind running this daemon on your machine for me?" A couple months later, you have a quarter of the org running a daemon that is spawing local agent sessions on these dev's machines to do work from a shared pool. One deployed DB to coordinate. But... some bad actor creates a bunch of tasks to nuke your machine and the sytem is not robust against attacks and boom!
+
+The defining characteristics of a Peer-based "Distributed" Agent Fleet are the following:
+
+1. Tasks comes from a shared pool
+2. Any runner of the daemon can claim on any task
+3. Agent sessions spawned by the daemon run under the identity of the person executing the daemon
+
+The daemons job is to detect "triggers" and spawn agent sessions for those triggers.
+
+Example triggers:
+1. a new task has been created and needs to be implemented
+2. a new PR has been created and needs review
+3. a PR has new comments that need to be addressed
+4. a PR failed the CI build and a fix is needed
+5. a PR has become merge conflicted and needs resolution
 
 ## The Risks
-This system is much safer with an intake agent in the flow.
+
+The risk is the reason you build it. The reason you build it is that your peers likely have a ver similar permissioning status in your company to you andthu all your agents can do the same work. The risk is you all can probably destroy your company if you wanted to and now you are pulling work from a unobserved shared pool and some how a task to delete everything and export to off shore account somehow landed in the shared pool. You didn't consider that did you.
+I go deeper in my other post about [the identity crisis in agentic development.](/blog/the_identity_crisis_in_agentic_development)
+
+The vulnerability is that these agent sessions are running under their identity of runner of the daemon and pulling work from a shared pool.
+
+I have heard of people opting to build this style oif agent fleet when a cloud based agent fleet with agent identities is possible specifically becasue the developers identity has more permissioning and they can get more done. So the risk is also the reason to build it.
+
+
+
+## The Best Practices
+I want to be clear. I am not shutting down this type of system. Working in a repo with one of these agent fleets overlayed will change the way you interact with software. To paint the picture, you author a full PR and once it is created you can just move on to the next thing becasue you know no matter what happens it will get merged from there. Or even better, building up enough context on what you want in a session to then create a task and your done, merged in the next couple hours. You go back and check the PR and see that it had a failed build that goit fixed and comments that were addressed. It looks like a lot of work. The next level thinking here is to start thinking about the process this task takes to get to the merge. Initial implementation. Build. Review. Iteration. Maybe it is a good thing that the initial implemenation never passes the first code review. 
+
+### Do not over constrain the implementer
+For best results
+### Review as a Guard
+### Invest in an Intake Agent
+### Reflection
+### Claim conflict resolution
+### Metrics + Dashboarding
+
+
