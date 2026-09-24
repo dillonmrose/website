@@ -7,7 +7,10 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Dillon Rose",
+  title: {
+    default: "Dillon Rose",
+    template: "%s | Dillon Rose",
+  },
   description: "Dillon Rose's Personal Website",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
