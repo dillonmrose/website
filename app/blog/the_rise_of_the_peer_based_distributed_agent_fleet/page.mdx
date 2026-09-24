@@ -67,20 +67,20 @@ There is a variant of this system where tasks are not pulled from a shared pool.
 ### Specific to Coding Harness
 The following advice is specific thoughts related to how to think about constructing the agent configuration of an implementer and reviewer in a coding harness.
 #### Do not over constrain the implementer
-For the flow where an agent is implementing a change given a task, it is important to try to provide the minimum amount of constraining instruction to the agent. During this phase, you should mentally be optimizing for recall not precision i.e. you value creating any working solution more than creating the ideal solution. By constraining too early, you will find that the agent will fail to find a solution at all more often when a solution was possible. As the developer, you want to find ways to delay providing instruction about the ideal solution as much as possible. You want to be thinking about how to provide your agent with the right information at the right moment when it is needed. This can be achieved via hooks and errors that only appear during build or comments received from a reviewer. All of which I will discuss later. The important notion to get into your mind is that the initial implementation is not intended to be merged. It is the starting point of a sculpting process.
+For the flow where an agent is implementing a change given a task, it is important to try to provide the minimum amount of constraining instruction to the agent. During this phase, you should mentally be optimizing for recall not precision i.e. you value creating any working solution more than creating the ideal solution. By constraining too early, you will find that the agent will fail to find a solution at all more often when a solution was possible. As the developer, you want to find ways to delay providing instruction about the ideal solution as much as possible. You want to be thinking about how to provide your agent with the right information at the right moment when it is needed. This can be achieved via hooks and errors that only appear during lint or comments received from a reviewer. All of which I will discuss later. The important notion to get into your mind is that the initial implementation is not intended to be merged. It is the starting point of a sculpting process.
 #### Hooks as a form of delayed instruction
 As the implementer starts working, hooks can be used to inject information into the context window of the agent. Think of it as just-in-time hints for the agent.
 
-Examples:
+##### Examples:
 1. Agent is about to commit → you share the strategy for naming commits and structuring the commit message
 2. Agent is about to edit a test file → you share information about testing conventions and utilities
 3. Agent is about to touch a file in a specific package → you share its architectural significance
 4. Agent is about to install a new package → you deny and redirect to the list of allowed packages
 
 #### Lint as a Guard
-Now that the initial implementation is completed, it is time to rein it in. Lint rules are a place to get creative and enforce your repo constraints. To guard your lint rules, you will want a PreToolUse hook that prevents lint rules from being edited by this system. With that in place, there are many things lint rules can achieve for you.
+The agent has finished its first pass while receiving some advice along the way and now it is time to rein it in. Lint rules are a place to get creative and enforce your repo constraints. To guard your lint rules, you will want a PreToolUse hook that prevents lint rules from being edited by this system. With that in place, there are many things lint rules can achieve for you.
 
-Some ideas of lint rules:
+##### Some ideas of lint rules:
 1. maximum file size to prevent bloat
 2. block specific package edges from being created or removed
 3. force established contracts to remain unchanged.

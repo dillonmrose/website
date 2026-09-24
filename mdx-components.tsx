@@ -23,6 +23,9 @@ const components = {
   h4: (props: HeadingProps) => (
     <h4 className="text-sm font-semibold text-gray-700 mt-4 mb-1" {...props} />
   ),
+  h5: (props: HeadingProps) => (
+    <h5 className="text-sm font-medium text-gray-500 mt-3 mb-1" {...props} />
+  ),
   p: (props: ParagraphProps) => (
     <p className="text-base leading-relaxed text-gray-700 my-2" {...props} />
   ),
