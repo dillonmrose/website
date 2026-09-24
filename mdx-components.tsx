@@ -1,6 +1,19 @@
 import React, { ComponentPropsWithoutRef } from 'react';
 import { Link } from 'next-view-transitions';
 
+export function Terminal({ lines }: { lines: string[] }) {
+  return (
+    <div className="bg-gray-900 rounded-lg p-4 my-4 font-mono text-sm">
+      {lines.map((line, i) => (
+        <div key={i} className="flex gap-2 text-gray-100">
+          <span className="text-green-400 select-none">$</span>
+          <span>{line}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 type ImageProps = ComponentPropsWithoutRef<'img'>;
 
 type HeadingProps = ComponentPropsWithoutRef<'h1'>;
