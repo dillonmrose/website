@@ -21,7 +21,7 @@ const components = {
     <h3 className="text-base font-semibold text-gray-900 mt-6 mb-2" {...props} />
   ),
   h4: (props: HeadingProps) => (
-    <h4 className="text-sm font-semibold text-gray-700 mt-4 mb-1 uppercase tracking-wide" {...props} />
+    <h4 className="text-sm font-semibold text-gray-700 mt-4 mb-1" {...props} />
   ),
   p: (props: ParagraphProps) => (
     <p className="text-base leading-relaxed text-gray-700 my-2" {...props} />
