@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: {
     default: "Dillon Rose",
-    template: "%s | Dillon Rose",
+    template: "%s",
   },
   description: "Dillon Rose's Personal Website",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
