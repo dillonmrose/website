@@ -3,11 +3,11 @@ import { Link } from 'next-view-transitions';
 
 export function Terminal({ lines }: { lines: string[] }) {
   return (
-    <div className="bg-gray-900 rounded-lg p-4 my-4 font-mono text-sm">
+    <div className="bg-gray-900 rounded-lg p-4 my-4 font-mono text-sm overflow-x-auto">
       {lines.map((line, i) => (
         <div key={i} className="flex gap-2 text-gray-100">
           <span className="text-green-400 select-none">$</span>
-          <span>{line}</span>
+          <span className="break-all">{line}</span>
         </div>
       ))}
     </div>
