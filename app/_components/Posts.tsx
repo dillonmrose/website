@@ -29,8 +29,8 @@ export const getPosts = (directoryName: string) => {
           sortDate,
         };
       })
-      .filter(Boolean)
-      .sort((a, b) => b!.sortDate.localeCompare(a!.sortDate));
+      .filter((p): p is NonNullable<typeof p> => p !== null)
+      .sort((a, b) => b.sortDate.localeCompare(a.sortDate));
   } catch (error) {
     console.error("Error reading directory:", error);
     return [];
