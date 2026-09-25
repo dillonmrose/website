@@ -9,7 +9,7 @@ export const metadata = {
 
 # The Rise of the Peer-based "Distributed" Agent Fleet
 
-I am writing this article to reflect on a specific pattern used to create agent fleets that I have seen pop up across most of the major tech companies. My intention is to name the pattern, point out some of the risks in the pattern and provide some best practices for developers to follow. Especially as agentic CLIs are permeating into non-software industries where those creating these systems will have less traditional training in software development to know about building for durability and safety.
+I am writing this article to reflect on a specific pattern used to create agent fleets that I have seen pop up across most of the major tech companies. My intention is to name the pattern, point out some of the risks in the pattern and provide some best practices for developers to follow. Especially as Agentic CLIs(Claude Code, Codex) are permeating into non-software industries where those creating these systems will have less traditional training in software development to know about building for durability and safety.
 
 For the non-software developers out there, just point Claude Code at this blog and start asking questions.
 
@@ -20,12 +20,12 @@ You should have a good starting point for your own agent fleet.
 ## The Path
 
 This is the story I have heard over and over. We will track the story of a developer named Bob.
-1. Developer starts using Claude Code.
+1. Bob starts using Claude Code.
 2. Bob realizes he can automate his entire job.
-3. Bob starts building out skills for non-interactive Claude Code sessions to perform the main processes of software development (coding, validation, review, fix CI, merge).
-4. Bob writes a daemon to pull tasks off a queue and monitor PRs to trigger Claude Code sessions.
-5. Upper management see Bob going infinite and wants to scale the harness, but company is not ready with a cloud option.
-6. Bob agrees to use this system to oversee work of his peers. Bob maxes out his dev box and remote dev boxes. Bob needs to scale more.
+3. Bob starts building out agent capabilities for non-interactive Claude Code sessions to perform the main processes of his job.
+4. Bob writes a daemon, a code script that runs in background, to pull tasks off from a shared source to trigger Claude Code sessions to perform the tasks.
+5. Upper management see Bob going infinite and wants to scale the idea, but the company is not ready with cloud infrastructure.
+6. Bob agrees to use this system to oversee the work of his peers. Bob maxes out his dev box. Bob needs to scale.
 7. Bob looks to his left and right. "Hey. You people have computers too. Do you mind running this daemon on your machine for me?"
 8. Bob creates a "distributed" agent fleet out of his peers machines.
 
@@ -35,7 +35,7 @@ This is the story I have heard over and over. We will track the story of a devel
 
 The defining characteristics of a Peer-based "Distributed" Agent Fleet are the following:
 
-1. Tasks come from a shared pool
+1. Tasks come from a shared source
 2. Any runner of the daemon can claim any task
 3. Agent sessions spawned by the daemon run under the identity of the person executing the daemon
 
