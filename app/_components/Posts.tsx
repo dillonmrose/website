@@ -20,6 +20,7 @@ export const getPosts = (directoryName: string) => {
           date = meta.date ?? '';
           sortDate = meta.sortDate ?? '';
           title = meta.title ?? '';
+          if (meta.draft) return null;
         } catch {}
         return {
           name: title || post.replaceAll('_', ' ').replace(/\b\w/g, char => char.toUpperCase()).replace('--', ': '),
@@ -28,7 +29,8 @@ export const getPosts = (directoryName: string) => {
           sortDate,
         };
       })
-      .sort((a, b) => b.sortDate.localeCompare(a.sortDate));
+      .filter(Boolean)
+      .sort((a, b) => b!.sortDate.localeCompare(a!.sortDate));
   } catch (error) {
     console.error("Error reading directory:", error);
     return [];

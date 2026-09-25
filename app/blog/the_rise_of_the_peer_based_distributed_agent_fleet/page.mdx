@@ -1,0 +1,108 @@
+import { Terminal } from '~/mdx-components';
+
+export const metadata = {
+  title: 'The Rise of the Peer-based "Distributed" Agent Fleet',
+  openGraph: {
+    images: [{ url: '/PeerCloud.png' }],
+  },
+};
+
+# The Rise of the Peer-based "Distributed" Agent Fleet
+
+I am writing this article to reflect on a specific pattern used to create agent fleets that I have seen pop up across most of the major tech companies. My intention is to name the pattern, point out some of the risks in the pattern and provide some best practices for developers to follow. Especially as Agentic CLIs(Claude Code, Codex) are permeating into non-software industries where those creating these systems will have less traditional training in software development to know about building for durability and safety.
+
+For the non-software developers out there, just point Claude Code at this blog and start asking questions.
+
+<Terminal lines={["Let's talk about https://www.dillonmrose.com/blog/peer_based_distributed_agent_fleet", "Explain to me ___.","What does he mean when he says ____.", "Ok, let's build it."]} />
+
+You should have a good starting point for your own agent fleet.
+
+## The Path
+
+This is the story I have heard over and over. We will track the story of a developer named Bob.
+1. Bob starts using Claude Code.
+2. Bob realizes he can automate his entire job.
+3. Bob starts building out agent capabilities for non-interactive Claude Code sessions to perform the main processes of his job.
+4. Bob writes a daemon, a code script that runs in background, to pull tasks off from a shared source to trigger Claude Code sessions to perform the tasks.
+5. Upper management see Bob going infinite and wants to scale the idea, but the company is not ready with cloud infrastructure.
+6. Bob agrees to use this system to oversee the work of his peers. Bob maxes out his dev box. Bob needs to scale.
+7. Bob looks to his left and right. "Hey. You people have computers too. Do you mind running this daemon on your machine for me?"
+8. Bob creates a "distributed" agent fleet out of his peers machines.
+
+<img src="/PeerCloud.png" className="w-[100%] block mx-auto rounded-2xl" />
+
+## The Pattern
+
+The defining characteristics of a Peer-based "Distributed" Agent Fleet are the following:
+
+1. Tasks come from a shared source
+2. Any runner of the daemon can claim any task
+3. Agent sessions spawned by the daemon run under the identity of the person executing the daemon
+
+The daemon's job is to detect "triggers" and spawn agent sessions for those triggers.
+
+### Example triggers for a Coding Harness Agent Fleet:
+1. a new task has been created and needs to be implemented
+2. a new PR has been created and needs review
+3. a PR has new comments that need to be addressed
+4. a PR failed the CI build and a fix is needed
+5. a PR has become merge conflicted and needs resolution
+
+(The most ambitious versions of this system allow merge with no human review.)
+
+### Example triggers for a Stock Trading Agent Fleet:
+1. stock price moves below price
+2. stock hits certain volume of trades
+
+The system is incredibly generic as the tasks in the shared pool can be of any nature. I will focus primarily on a Coding Harness Agent Fleet, but the risks and best practices are applicable to all versions.
+
+## The Risks
+
+The reason this strategy works so well is that Bob's peers likely have a very similar permissioning status to him at his company. So all the agents in the pool can perform the same tasks.
+The risk is the permissioning status of the members in the pool. If the members of the pool can do damage to the company with their work account, so can their agent. If the system is not designed to be resilient to attacks/prompt injection, pulling tasks from an unobserved pool and blindly assigning them to an agent can go very bad for Bob and his peers. A bad actor can really do damage in one of these systems. However you don't even necessarily need a bad actor for things to go bad. Minor misunderstanding in conversations with agents become errors in task descriptions that land as bugs in code.
+
+I have seen developers opt for this system because the company is lacking the ability to provision capable agent identities and even when they can run agents in a truly distributed fashion, they opt to build this system because they can achieve more with this setup. For example, the local agent sessions can access logs or authenticate with APIs within the company that agent identities at the company can not. So this more dangerous system is built in the name of productivity.
+
+## The Best Practices
+
+I want to be clear. I am not saying that people should not build this system. People need to experiment with agent fleets. Your first distributed agent fleet isn't going to be perfect. Working in a repo with one of these agent fleets overlayed changed the way I interact with software. To paint the picture, you can author a full PR and once it is created you can just move on to the next thing because you know no matter what happens it will get merged from there. Or even better, you work with an agent to build up enough context on what you want to then create a task and you're done. Implemented and merged in the next couple hours. Later you check the task and see that the PR that was created had a failed build that got fixed and comments that were addressed. The task went through quite the journey. The system handled everything for you. I am just trying to help people have their first Peer-based "Distributed" Agent Fleet be a little bit safer than the one I made.
+
+### Invest in the Intake Process
+For safety, this is the single most important investment. This intake process has one job: to determine if this task should be accepted or rejected. To create an intake process, you can either create an agent or use a System One model to make the decision prior to proceeding the flow to the agent that performs the tasks. This step needs to be robust to attack.
+### Reflection
+Whenever you are running non-interactive agent sessions, it is worthwhile to collect the log of the session. Then you can run a different agent session to read through the logs of the sessions and improve the system. I call this process reflection. For example, you become aware of a few sessions where the agent performed the task poorly. You spawn a reflection session over those session's logs to see if you can find anything that went wrong. At a certain point, a failed task can be used as a trigger to spawn a reflection session making the system self-improving. 
+### Claim conflict resolution
+An early hurdle to overcome to build this system is determining how to handle 'race conditions' between the various team members running the daemon as they can all try to work on the same task at the same time. Some amount of coordination is required. The crux of the solution is determining the single source of truth. Depending on your scale, an elegant solution involves having a DB in the cloud. To get off the ground, you can make use of the task management system you are using. Usually the task management systems have some metadata/tags capability that can be used to resolve race conditions. Make the first claimer mutate the task in some way that signals to the others that this task is now claimed. Just be aware that these task management systems were not built to be abused in this way and can break under pressure.
+### Metrics + Dashboarding
+In the event that you did get up a DB to manage claim conflict resolution, you now have a great place for the daemon to start reporting some telemetry on the system. You can consider moving the definition of the tasks itself to the DB and off your company's task management system. As the system matures, knowing about the health of the system will enable you to know where to invest next. Are tasks sitting in the pool for a long time? You need to add more runners. Are the agents failing to complete the skills? You need to invest in reflection and agent configuration.
+### Consider a Safer Variant
+There is a variant of this system where tasks are not pulled from a shared pool. Tasks are pulled from a user-specific pool. Therefore, your agents only work on tasks that are assigned to you or created by you. As the builder of the system, you can decide how to build this variant. The general idea being that silo-ing each person into their own swim lane limits exposure to bad actors. 
+### Specific to Coding Harness
+The following advice is specific thoughts related to how to think about constructing the agent configuration of an implementer and reviewer in a coding harness.
+#### Do not over constrain the implementer
+For the flow where an agent is implementing a change given a task, it is important to try to provide the minimum amount of constraining instruction to the agent. During this phase, you should mentally be optimizing for recall not precision i.e. you value creating any working solution more than creating the ideal solution. By constraining too early, you will find that the agent will fail to find a solution at all more often when a solution was possible. As the developer, you want to find ways to delay providing instruction about the ideal solution as much as possible. You want to be thinking about how to provide your agent with the right information at the right moment when it is needed. This can be achieved via hooks and errors that only appear during lint or comments received from a reviewer. All of which I will discuss later. The important notion to get into your mind is that the initial implementation is not intended to be merged. It is the starting point of a sculpting process.
+#### Hooks as a form of delayed instruction
+As the implementer starts working, hooks can be used to inject information into the context window of the agent. Think of it as just-in-time hints for the agent.
+
+##### Examples:
+1. Agent is about to commit → you share the strategy for naming commits and structuring the commit message
+2. Agent is about to edit a test file → you share information about testing conventions and utilities
+3. Agent is about to touch a file in a specific package → you share its architectural significance
+4. Agent is about to install a new package → you deny and redirect to the list of allowed packages
+
+#### Lint as a Guard
+The agent has finished its first pass while receiving some advice along the way and now it is time to rein it in. Lint rules are a place to get creative and enforce your repo constraints. To guard your lint rules, you will want a PreToolUse hook that prevents lint rules from being edited by this system. With that in place, there are many things lint rules can achieve for you.
+
+##### Some ideas of lint rules:
+1. maximum file size to prevent bloat
+2. block specific package edges from being created or removed
+3. force established contracts to remain unchanged.
+4. force your preferred logger to be used
+5. pin dependency versions
+
+Imagine the flow to this point, the agent started its implementation completely unconstrained, received some helpful tips at the right moment. After completing the change, ran the build and lint rules where it received information about repo constraints it was breaking and the agent addressed all those failures. Our change is starting to take shape.
+
+#### Review as a Guard
+Now that the initial implementation is building and the lint rules are passing, it is time for review. It is extremely important that the reviewer and implementer have different context windows. If you ask the implementer to review its own change, it will tell you that this is the best change anyone has ever authored. The mental model of building the reviewer is that it is in an adversarial relationship with the implementer and acts as your last line of defense. You will spend most of your time working on the reviewer. The implementer can be incredibly dumb as long as the reviewer holds the line and provides actionable feedback, the implementer will eventually get the correct change made. It may have to iterate on the reviewer a few times to figure it out and that's part of the design of the system here.
+
+## Good Luck!
