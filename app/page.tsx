@@ -30,7 +30,7 @@ const projects: Project[] = [
       "Cut commit-to-production from 2 weeks to 3 days by rearchitecting deployment",
       "Technical Lead for the Client Platform team: reliability, latency, auth, and flighting",
     ],
-    imageGroups: [["/Copilot.png"]],
+    imageGroups: [["/Copilot.png"], ["/Copilot2.png"]],
     slideBullets: [
       [
         "One of the original members of the 10-engineer team that built the Copilot client app from scratch",
