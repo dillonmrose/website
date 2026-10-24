@@ -8,6 +8,13 @@ const activeDot = () => dots().findIndex((d) => d.className.includes("scale-150"
 // The persistent header's heading; each slide also has an invisible spacer copy.
 const heading = () =>
   screen.queryAllByRole("heading", { level: 2 }).find((h) => !h.className.includes("invisible"))?.textContent;
+// The one slide wrapper on top (Slide sets z-index 1 only on the active slide).
+const activeSlide = () => {
+  const active = [...document.querySelectorAll<HTMLElement>("div")].filter((d) => d.style.zIndex === "1");
+  expect(active).toHaveLength(1);
+  return active[0];
+};
+const showsImageHalf = () => activeSlide().querySelector("img")?.className.includes("max-h-[65vh]") ?? false;
 const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms));
 const wheel = (deltaY: number) => fireEvent.wheel(window, { deltaY });
 const swipe = (fromY: number, toY: number) => {
@@ -81,17 +88,22 @@ describe("landing page on mobile", () => {
     render(<HomePage />);
     expect(dots()).toHaveLength(1 + flatSlides.length);
     wheel(100);
-    expect(screen.getAllByRole("img", { name: flatSlides[0].section.name }).length).toBeGreaterThan(0);
     expect(activeDot()).toBe(1);
+    expect(showsImageHalf()).toBe(true);
     wait(1300);
-    expect(activeDot()).toBe(1); // text half of the same slide
+    expect(activeDot()).toBe(1); // same dot: the text half of the same slide
+    expect(showsImageHalf()).toBe(false);
+    expect(activeSlide().textContent).toContain(flatSlides[0].bullets[0] as string);
     wait(1000);
     fireEvent.click(dots()[2]);
     expect(activeDot()).toBe(2);
+    expect(showsImageHalf()).toBe(false);
     wait(1000);
     wheel(-100); // backwards onto an image slide keeps going backwards
+    expect(showsImageHalf()).toBe(true);
     wait(1300);
     expect(activeDot()).toBe(1);
+    expect(showsImageHalf()).toBe(false);
   });
 
   it("resets to the hero when the layout switches", () => {

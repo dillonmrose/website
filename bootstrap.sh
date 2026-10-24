@@ -44,6 +44,10 @@ if [ -n "${CI:-}" ]; then
   pnpm exec playwright install --with-deps chromium
 else
   pnpm exec playwright install chromium
+  # The browser's Linux system libraries come from bo; say so if they're missing.
+  if [ "$(uname)" = "Linux" ] && ! /sbin/ldconfig -p | grep -q "^[[:space:]]libnss3.so "; then
+    echo "  [WARN] Chromium's system libraries look missing; run bo's bootstrap or: pnpm exec playwright install-deps chromium" >&2
+  fi
 fi
 echo "  [OK] playwright chromium"
 

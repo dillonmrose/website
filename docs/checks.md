@@ -76,11 +76,17 @@ inside a Next build; the end-to-end tests load it on every page.
 viewport against `pnpm start` on port 3100
 ([`playwright.config.ts`](../playwright.config.ts)). Next warns that `next start`
 doesn't support `output: "standalone"` ([`next.config.ts`](../next.config.ts)); it
-still serves the pages, and Vercel ignores `standalone`.
+still serves every page the tests visit. Production runs on Vercel, which builds
+with its own Next.js integration rather than `next start`. In CI a failed run
+uploads the HTML report and traces as the `playwright-report` artifact.
 
 The browser comes from `bootstrap.sh` (`playwright install chromium`, matching the
 pinned `@playwright/test`). Its Linux system libraries come from the machine
-setup (bo) locally, and from `--with-deps` when `$CI` is set.
+setup (bo) locally, and bootstrap warns if they look missing; in CI,
+`--with-deps` installs them.
+
+Node is pinned to major 24 in `.nvmrc` (local and CI) and `engines.node` in
+[`package.json`](../package.json), which Vercel uses for production builds.
 
 ## Pre-commit hook
 
