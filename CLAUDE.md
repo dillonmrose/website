@@ -5,7 +5,7 @@ This is Dillon's personal website and blog, primarily for showcasing his profess
 
 ## Page Jargon
 
-Page names (landing page, hero, section, slide, resume page, blog page) are defined in
+Page names (landing page, hero, section, slide, resume page, blog page, projects page) are defined in
 [`docs/ubiquitous-language.md`](docs/ubiquitous-language.md). Use those terms.
 
 ## Tech Stack
