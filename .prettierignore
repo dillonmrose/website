@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+.next/
+public/
+# Content: reformatting MDX/Markdown can change how it renders.
+*.mdx
+*.md
+**/__fixtures__/

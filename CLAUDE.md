@@ -15,7 +15,8 @@ Page names (landing page, hero, section, slide, resume page, blog page, projects
 - Tailwind CSS v3
 - MDX for content pages (`mdx-components.tsx` defines all MDX element styles)
 - `next-view-transitions` for page transitions
-- pnpm
+- pnpm, Node pinned in `.nvmrc`
+- ESLint + Prettier; Vitest + Testing Library; Playwright
 
 ## Running Locally
 
@@ -26,15 +27,45 @@ pnpm dev
 
 Opens at http://localhost:3000. `pnpm build` is the production build.
 
+## Commands
+
+This repo has no CLI of its own; package scripts are the commands, and CI runs
+exactly `./bootstrap.sh` then `pnpm check`. Details and rule exceptions:
+[`docs/checks.md`](docs/checks.md).
+
+| Command | Does |
+| --- | --- |
+| `pnpm check` | Everything CI runs: lint, format check, typecheck, build, unit tests, e2e tests. Run before handoff. |
+| `pnpm lint` / `pnpm lint:fix` | ESLint, zero warnings allowed. |
+| `pnpm format` / `pnpm format:check` | Prettier (120 wide; MDX excluded). |
+| `pnpm typecheck` | `tsc --noEmit`. |
+| `pnpm test` | Vitest unit tests with coverage (fails under 85%). |
+| `pnpm test:e2e` | Playwright against the production build (`pnpm build` first). |
+
+`main` is protected: changes land through a PR whose `check` job passed.
+
+## Tests
+
+- **Unit tests sit beside their source**: `Posts.tsx` → `Posts.test.tsx`. Shared
+  unit-test data goes in a `__fixtures__/` folder next to the tests that use it.
+- **End-to-end tests live in [`e2e/`](e2e/README.md)**.
+- **Coverage**: unit tests must cover at least 85% (lines, statements, functions,
+  branches), enforced by `pnpm check` and CI. Coverage exclusions are listed with
+  their reasons in [`docs/checks.md`](docs/checks.md); never exclude a file just to
+  reach the number.
+- New behavior comes with its tests in the same change.
+
 ## Key Files
 
+- `app/page.tsx` — the landing page; its parts (hero, slides, navigation hook) live in `app/_landing/`, and its content in `app/_landing/sections.ts`
 - `app/layout.tsx` — root layout: Inter font, TopNav, max-width container
 - `app/_components/TopNav.tsx` — sticky horizontal nav bar
 - `app/_components/Posts.tsx` — renders a directory listing as links (used by Blog and Books pages)
 - `mdx-components.tsx` — MDX element overrides (headings, paragraphs, links, etc.)
 - `app/globals.css` — base CSS (table styles, code blocks, PDF viewer)
 - `tailwind.config.ts` — Tailwind config
-- `bootstrap.sh` — fresh-clone setup (Node check, pinned pnpm, `pnpm install --frozen-lockfile`)
+- `bootstrap.sh` — fresh-clone setup (pinned Node and pnpm, `pnpm install --frozen-lockfile`, Playwright's browser, git hooks)
+- `.github/workflows/ci.yml`, `.githooks/pre-commit` — CI and the staged-file lint hook
 - `docs/` — the knowledge base; start at `docs/index.md`
 
 ## The repo is self-sufficient: keep bootstrap.sh current

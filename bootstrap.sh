@@ -6,15 +6,16 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 PNPM_VERSION=9.15.9  # pnpm-lock.yaml is lockfileVersion 9.0
 
-# Node.js: Next.js 15 needs >= 18.18.
+# Node.js, pinned by major version in .nvmrc (CI reads the same file).
+NODE_MAJOR="$(cat .nvmrc)"
 if ! command -v node &>/dev/null; then
-  echo "  [FAIL] node not found; install Node.js 20+ (e.g. via nvm) and re-run" >&2
+  echo "  [FAIL] node not found; install Node.js $NODE_MAJOR (e.g. nvm install $NODE_MAJOR) and re-run" >&2
   exit 1
 fi
-if node -e 'const [a,b]=process.versions.node.split(".").map(Number); process.exit(a>18||(a===18&&b>=18)?0:1)'; then
+if [ "$(node -p 'process.versions.node.split(".")[0]')" = "$NODE_MAJOR" ]; then
   echo "  [OK] node $(node --version)"
 else
-  echo "  [FAIL] node $(node --version) is too old; Next.js 15 needs >= 18.18" >&2
+  echo "  [FAIL] node $(node --version), but .nvmrc pins $NODE_MAJOR; run: nvm install $NODE_MAJOR" >&2
   exit 1
 fi
 
@@ -37,4 +38,21 @@ echo "  [..] pnpm install --frozen-lockfile"
 pnpm install --frozen-lockfile
 echo "  [OK] dependencies installed"
 
-echo "  [OK] ready: pnpm dev (http://localhost:3000), pnpm build"
+# Playwright's browser, matching the pinned @playwright/test (a no-op once cached).
+# Locally, bo installs the Linux libraries it needs; in CI, --with-deps does.
+if [ -n "${CI:-}" ]; then
+  pnpm exec playwright install --with-deps chromium
+else
+  pnpm exec playwright install chromium
+fi
+echo "  [OK] playwright chromium"
+
+# Git hooks: lint staged files before each commit (.githooks/pre-commit).
+if git rev-parse --git-dir &>/dev/null; then
+  if [ "$(git config core.hooksPath)" != ".githooks" ]; then
+    git config core.hooksPath .githooks
+  fi
+  echo "  [OK] git hooks: .githooks"
+fi
+
+echo "  [OK] ready: pnpm dev (http://localhost:3000), pnpm check (everything CI runs)"

@@ -22,7 +22,7 @@ Moved from the "Page Jargon" section of the repo's `CLAUDE.md`.
 | Term | Definition | Aliases to avoid |
 | --- | --- | --- |
 | **Hero** | The first slide on the **Landing page**, holding the personal statement and subtext; not part of any **Section**. | |
-| **Section** | A group of one or two **Slides** for a single career stage or project (e.g. Microsoft Copilot, Play My Emails), defined as one entry in the `projects` array in [`app/page.tsx`](../app/page.tsx); its slide count is the number of `imageGroups`. | |
+| **Section** | A group of one or two **Slides** for a single career stage or project (e.g. Microsoft Copilot, Play My Emails), defined as one entry in the `sections` array in [`app/_landing/sections.ts`](../app/_landing/sections.ts); its slide count is the number of `imageGroups`. | |
 | **Slide** | One full-screen scrollable unit of the **Landing page**: the section's text (dates, role, title, bullets, stat) on the left and one image group on the right, with optional per-slide bullet overrides via `slideBullets`. | |
 
 ## Relationships
@@ -34,7 +34,7 @@ Moved from the "Page Jargon" section of the repo's `CLAUDE.md`.
 ## Example dialogue
 
 > **Dev:** "Should the new consulting work go in the **Hero**?"
-> **Domain expert:** "No. The **Hero** is only the personal statement. Add a **Section** to the `projects` array."
+> **Domain expert:** "No. The **Hero** is only the personal statement. Add a **Section** to the `sections` array."
 > **Dev:** "It has two sets of screenshots. Is that two **Sections**?"
 > **Domain expert:** "One **Section** with two image groups, so it renders as two **Slides**. Use `slideBullets` if each **Slide** needs its own bullets."
 > **Dev:** "And a side project with a live site, like Fantasy Survivor?"
@@ -44,6 +44,7 @@ Moved from the "Page Jargon" section of the repo's `CLAUDE.md`.
 
 - The old jargon listed a **Books page** at `app/books/page.mdx`. It no longer exists: book reviews are
   **Blog page** posts (e.g. `app/blog/book_review--the_effective_engineer/`), so the term was dropped.
-- "project" now means three things: a **Project entry** on the **Projects page**, the `projects` array in
-  `app/page.tsx` (which holds **Sections**), and the user-level **Project** (a repo). Say **Project entry**
-  or **Section** for the site's content, and keep **Project** for repos.
+- "project" means two things: a **Project entry** on the **Projects page**, and the user-level
+  **Project** (a repo). Say **Project entry** for the site's content and keep **Project** for repos. (The
+  landing page's `projects` array, a third meaning, was renamed `sections` and moved to
+  `app/_landing/sections.ts`.)
