@@ -9,6 +9,13 @@ Moved from the "Page Jargon" section of the repo's `CLAUDE.md`.
 | **Landing page** | The first page visitors see: a full-screen slideshow of a **Hero** followed by career **Sections**. | `/` | [`app/page.tsx`](../app/page.tsx) | home page, front page |
 | **Resume page** | A PDF viewer of the resume (`public/resume.pdf`). | `/resume` | [`app/resume/page.tsx`](../app/resume/page.tsx) | |
 | **Blog page** | The list of blog posts found under `app/blog/*/`, each post a `page.mdx` in its own subdirectory. | `/blog` | [`app/blog/page.mdx`](../app/blog/page.mdx) | |
+| **Projects page** | A list of **Project entries** for things Dillon has built outside work. | `/projects` | [`app/projects/page.mdx`](../app/projects/page.mdx) | portfolio page |
+
+## Projects page structure
+
+| Term | Definition | Aliases to avoid |
+| --- | --- | --- |
+| **Project entry** | One item on the **Projects page**: a heading that links to the live site, then a short description (e.g. Fantasy Survivor). | project card |
 
 ## Landing page structure
 
@@ -22,6 +29,7 @@ Moved from the "Page Jargon" section of the repo's `CLAUDE.md`.
 
 - The **Landing page** has one **Hero** followed by one or more **Sections**.
 - A **Section** has one or two **Slides**, one per image group.
+- The **Projects page** has one or more **Project entries**.
 
 ## Example dialogue
 
@@ -29,8 +37,13 @@ Moved from the "Page Jargon" section of the repo's `CLAUDE.md`.
 > **Domain expert:** "No. The **Hero** is only the personal statement. Add a **Section** to the `projects` array."
 > **Dev:** "It has two sets of screenshots. Is that two **Sections**?"
 > **Domain expert:** "One **Section** with two image groups, so it renders as two **Slides**. Use `slideBullets` if each **Slide** needs its own bullets."
+> **Dev:** "And a side project with a live site, like Fantasy Survivor?"
+> **Domain expert:** "That's a **Project entry** on the **Projects page**. It only becomes a **Section** too if it should be on the **Landing page**."
 
 ## Flagged ambiguities
 
 - The old jargon listed a **Books page** at `app/books/page.mdx`. It no longer exists: book reviews are
   **Blog page** posts (e.g. `app/blog/book_review--the_effective_engineer/`), so the term was dropped.
+- "project" now means three things: a **Project entry** on the **Projects page**, the `projects` array in
+  `app/page.tsx` (which holds **Sections**), and the user-level **Project** (a repo). Say **Project entry**
+  or **Section** for the site's content, and keep **Project** for repos.

@@ -3,6 +3,7 @@ import Link from "next/link";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Blog", href: "/blog" },
+  { label: "Projects", href: "/projects" },
 ];
 
 export function TopNav() {
