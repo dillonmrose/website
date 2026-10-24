@@ -66,6 +66,7 @@ exactly `./bootstrap.sh` then `pnpm check`. Details and rule exceptions:
 - `tailwind.config.ts` — Tailwind config
 - `bootstrap.sh` — fresh-clone setup (pinned Node and pnpm, `pnpm install --frozen-lockfile`, Playwright's browser, git hooks)
 - `.github/workflows/ci.yml`, `.githooks/pre-commit` — CI and the staged-file lint hook
+- `e2e/` — Playwright end-to-end tests against the production build; conventions in `e2e/README.md` (unit tests sit beside their source)
 - `docs/` — the knowledge base; start at `docs/index.md`
 
 ## The repo is self-sufficient: keep bootstrap.sh current
