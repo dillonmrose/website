@@ -1,29 +1,34 @@
-import fs from 'fs';
+import fs from "fs";
+import path from "path";
 import Link from "next/link";
-import path from 'path';
-import React from 'react';
+import React from "react";
 
 export const getPosts = (directoryName: string) => {
-  const directoryPath = path.join(process.cwd(), 'app', directoryName);
+  const directoryPath = path.join(process.cwd(), "app", directoryName);
 
   try {
     const files = fs.readdirSync(directoryPath, { recursive: true, withFileTypes: true });
     const posts = files.filter((file) => file.isDirectory()).map((file) => file.name);
     return posts
       .map((post) => {
-        const metaPath = path.join(directoryPath, post, 'meta.json');
-        let date = '';
-        let sortDate = '';
-        let title = '';
+        const metaPath = path.join(directoryPath, post, "meta.json");
+        let date = "";
+        let sortDate = "";
+        let title = "";
         try {
-          const meta = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-          date = meta.date ?? '';
-          sortDate = meta.sortDate ?? '';
-          title = meta.title ?? '';
+          const meta = JSON.parse(fs.readFileSync(metaPath, "utf-8"));
+          date = meta.date ?? "";
+          sortDate = meta.sortDate ?? "";
+          title = meta.title ?? "";
           if (meta.draft) return null;
         } catch {}
         return {
-          name: title || post.replaceAll('_', ' ').replace(/\b\w/g, char => char.toUpperCase()).replace('--', ': '),
+          name:
+            title ||
+            post
+              .replaceAll("_", " ")
+              .replace(/\b\w/g, (char) => char.toUpperCase())
+              .replace("--", ": "),
           path: `/${directoryName}/${post}`,
           date,
           sortDate,

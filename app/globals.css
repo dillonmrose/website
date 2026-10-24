@@ -6,7 +6,6 @@ html {
   scrollbar-gutter: stable;
 }
 
-
 table {
   border-collapse: collapse;
   width: 100%;
@@ -14,7 +13,8 @@ table {
   margin: 1rem 0;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #e5e7eb;
   padding: 0.5rem 0.75rem;
   text-align: left;
@@ -41,7 +41,7 @@ code {
   padding: 0.125rem 0.35rem;
   border-radius: 0.25rem;
   font-size: 0.875em;
-  font-family: ui-monospace, 'Cascadia Code', monospace;
+  font-family: ui-monospace, "Cascadia Code", monospace;
 }
 
 pre code {

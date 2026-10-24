@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Lint and format-check the staged files; CI's full `pnpm check` is the gate.
+set -euo pipefail
+
+mapfile -d '' -t staged < <(git diff --cached --name-only -z --diff-filter=ACMR)
+[ ${#staged[@]} -eq 0 ] && exit 0
+
+lintable=()
+for f in "${staged[@]}"; do
+  case "$f" in *.ts|*.tsx|*.mjs|*.mts|*.js) lintable+=("$f") ;; esac
+done
+
+if [ ${#lintable[@]} -gt 0 ]; then
+  pnpm exec eslint --max-warnings 0 -- "${lintable[@]}"
+fi
+pnpm exec prettier --check --ignore-unknown -- "${staged[@]}"
