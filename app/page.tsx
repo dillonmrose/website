@@ -23,7 +23,10 @@ export default function HomePage() {
   const slideState = (i: number): SlideState => (i === current ? "active" : i < current ? "above" : "below");
 
   return (
-    <div className="fixed inset-0 top-14 overflow-hidden">
+    // top-14 matches the nav's h-14, so both grow with enlarged text. overflow-clip, not
+    // hidden: the offset off-screen slides make this scrollable, and the browser can scroll
+    // a hidden-overflow box, shifting every slide up under the nav.
+    <div className="fixed inset-0 top-14 overflow-clip">
       {/* Persistent heading — stays put within a section, fades on section change */}
       <PersistentHeader section={currentSection} scrollTop={scrollTop} />
 

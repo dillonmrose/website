@@ -149,6 +149,25 @@ describe("a slide taller than the screen", () => {
     expect(activeDot()).toBe(1);
   });
 
+  it("doesn't move on the swipe that scrolls the slide to its bottom", () => {
+    render(<HomePage />);
+    const el = scrollActiveSlide(0);
+    fireEvent.touchStart(el, { touches: [{ clientY: 300 }] });
+    scrollActiveSlide(400); // the swipe itself reached the bottom
+    fireEvent.touchEnd(el, { changedTouches: [{ clientY: 100 }] });
+    expect(activeDot()).toBe(0);
+  });
+
+  it("starts a slide at its top when coming back to it", () => {
+    render(<HomePage />);
+    const hero = scrollActiveSlide(400);
+    wheel(100);
+    wait(1000);
+    wheel(-100);
+    expect(activeSlide()).toBe(hero);
+    expect(hero.scrollTop).toBe(0);
+  });
+
   it("moves the section heading with the scroll and resets it on the next slide", () => {
     render(<HomePage />);
     wheel(100);
