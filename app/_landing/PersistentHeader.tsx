@@ -5,7 +5,8 @@ import { SlideLayout } from "./Slide";
 import type { Section } from "./sections";
 
 // Renders the heading + meta visibly, fades only on section change.
-export function PersistentHeader({ section }: { section: Section | null }) {
+// Shifts up by scrollTop so it moves with the bullets of a scrolled slide.
+export function PersistentHeader({ section, scrollTop = 0 }: { section: Section | null; scrollTop?: number }) {
   const [shown, setShown] = useState(section);
   const [opacity, setOpacity] = useState(section ? 1 : 0);
 
@@ -26,7 +27,7 @@ export function PersistentHeader({ section }: { section: Section | null }) {
   return (
     <div
       className="absolute inset-0 pointer-events-none z-10"
-      style={{ transition: "opacity 350ms ease-in-out", opacity }}
+      style={{ transition: "opacity 350ms ease-in-out", opacity, transform: `translateY(${-scrollTop}px)` }}
     >
       <SlideLayout hasImages={hasImages}>
         <div className={`${hasImages ? "w-full md:w-[40%] md:shrink-0" : "max-w-2xl"} space-y-5 min-w-0`}>
