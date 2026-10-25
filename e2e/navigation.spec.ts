@@ -41,3 +41,13 @@ test("the landing page moves to a section from its slide dots", async ({ page })
   await page.getByRole("button", { name: "Go to slide 2" }).click();
   await expect(page.getByRole("heading", { level: 2, name: "Copilot" }).first()).toBeVisible();
 });
+
+test("the hero's top line stays below the nav with enlarged phone text", async ({ page }) => {
+  // iOS Larger Text or an in-app browser's text size scales rem; 19px ≈ +20%.
+  await page.setViewportSize({ width: 402, height: 620 });
+  await page.goto("/");
+  await page.addStyleTag({ content: "html { font-size: 19px }" });
+  const nav = await page.getByRole("navigation").boundingBox();
+  const eyebrow = await page.getByText("Full Stack Engineer").boundingBox();
+  expect(eyebrow?.y).toBeGreaterThanOrEqual((nav?.y ?? 0) + (nav?.height ?? 0));
+});
