@@ -51,3 +51,16 @@ test("the hero's top line stays below the nav with enlarged phone text", async (
   const eyebrow = await page.getByText("Full Stack Engineer").boundingBox();
   expect(eyebrow?.y).toBeGreaterThanOrEqual((nav?.y ?? 0) + (nav?.height ?? 0));
 });
+
+test("a long section slide scrolls to its last bullet on a short phone", async ({ page }) => {
+  await page.setViewportSize({ width: 402, height: 620 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Go to slide 3" }).click();
+  const last = page.getByText("Addresses merge conflicts", { exact: false });
+  await expect(last).not.toBeInViewport();
+  await page.mouse.move(200, 400);
+  await page.mouse.wheel(0, 2000); // one gesture from the top: scrolls, doesn't move
+  await expect(last).toBeInViewport();
+  // The slide scrolled rather than changed, and the heading moved with it.
+  await expect(page.getByRole("button", { name: "Go to slide 3" })).toHaveClass(/scale-150/);
+});

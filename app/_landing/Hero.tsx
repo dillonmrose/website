@@ -1,8 +1,8 @@
 export function Hero() {
-  // my-auto rather than justify-center: if enlarged text makes this taller than the
-  // screen, it overflows at the bottom instead of clipping the top under the nav.
+  // min-h-full and my-auto rather than h-full and justify-center: if enlarged text makes
+  // this taller than the screen, it grows and the slide scrolls instead of clipping the top.
   return (
-    <div className="h-full flex flex-col max-w-4xl mx-auto px-6">
+    <div className="min-h-full flex flex-col max-w-4xl mx-auto px-6">
       <div className="my-auto py-6">
         <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-5">Full Stack Engineer</p>
         <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">

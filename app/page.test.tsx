@@ -22,6 +22,20 @@ const swipe = (fromY: number, toY: number) => {
   fireEvent.touchEnd(window, { changedTouches: [{ clientY: toY }] });
 };
 
+// Gives the active slide a scrollable height and position, as a short phone would.
+function scrollActiveSlide(scrollTop: number) {
+  const el = activeSlide();
+  Object.defineProperty(el, "scrollHeight", { configurable: true, value: 1000 });
+  Object.defineProperty(el, "clientHeight", { configurable: true, value: 600 });
+  el.scrollTop = scrollTop;
+  fireEvent.scroll(el);
+  return el;
+}
+const swipeOn = (el: Element, fromY: number, toY: number) => {
+  fireEvent.touchStart(el, { touches: [{ clientY: fromY }] });
+  fireEvent.touchEnd(el, { changedTouches: [{ clientY: toY }] });
+};
+
 function setWidth(width: number) {
   Object.defineProperty(window, "innerWidth", { configurable: true, value: width });
 }
@@ -115,5 +129,38 @@ describe("landing page on mobile", () => {
       window.dispatchEvent(new Event("resize"));
     });
     expect(activeDot()).toBe(0);
+  });
+});
+
+describe("a slide taller than the screen", () => {
+  it("scrolls before a swipe or wheel moves to another slide", () => {
+    render(<HomePage />);
+    let el = scrollActiveSlide(0);
+    swipeOn(el, 300, 100); // at the top, swiping toward the bottom: scroll
+    fireEvent.wheel(el, { deltaY: 100 });
+    expect(activeDot()).toBe(0);
+    el = scrollActiveSlide(400); // scrolled to the bottom
+    swipeOn(el, 300, 100);
+    expect(activeDot()).toBe(1);
+    wait(1000);
+    el = scrollActiveSlide(200); // mid-way: neither direction moves
+    swipeOn(el, 100, 300);
+    fireEvent.wheel(el, { deltaY: -100 });
+    expect(activeDot()).toBe(1);
+  });
+
+  it("moves the section heading with the scroll and resets it on the next slide", () => {
+    render(<HomePage />);
+    wheel(100);
+    wait(1000);
+    const header = () =>
+      screen
+        .getByText(flatSlides[0].section.name, { selector: "h2:not(.invisible)" })
+        .closest("[style*='opacity']") as HTMLElement;
+    scrollActiveSlide(120);
+    expect(header().style.transform).toBe("translateY(-120px)");
+    scrollActiveSlide(400);
+    wheel(100);
+    expect(header().style.transform).toBe("translateY(0px)");
   });
 });
