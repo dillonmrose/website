@@ -18,7 +18,7 @@ function ResumeHeader() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-4xl font-bold tracking-tight text-gray-900">DILLON ROSE</h1>
-          <p className="text-blue-500 font-medium text-base mt-0.5">Full Stack Engineer</p>
+          <p className="text-blue-500 font-medium text-base mt-0.5">Principal Full-Stack Engineer</p>
         </div>
         <a
           href="/resume.pdf"
@@ -75,27 +75,36 @@ function LeftColumn() {
       <Section title="Summary">
         <p className="text-gray-600 leading-relaxed">
           {
-            "I'm a Full Stack Engineer with a decade of experience building AI-powered user experiences. I've played a key role in developing three projects from the ground up, two of which I led as a tech lead, with both scaling to over 1M monthly active users. I have a solid grasp of the processes and structures required to deliver new features, while also ensuring live site reliability and maintaining code health."
+            "Principal full-stack engineer with 12 years of experience creating AI-powered experiences. Led two products from inception to scale, including Microsoft Copilot (~40M MAU). Deep grasp of the processes and structures required to ship products while ensuring live-site reliability and code health. Currently focused on agentic systems: coding harnesses, multi-agent orchestration, and eval-driven development. Eager to scale the next generation of AI products."
           }
         </p>
       </Section>
 
       <Section title="Technical Skills">
-        <div className="grid grid-cols-3 gap-x-2 gap-y-1 text-gray-700">
-          {["React", "Next.js", "Python", "C#", "VSCode", "AI Fluent"].map((s) => (
-            <span key={s}>{s}</span>
+        <ul className="space-y-1 text-gray-700">
+          {[
+            "Agentic Development",
+            "Software Factories",
+            "Eval-Driven Development",
+            "React",
+            "TypeScript",
+            "C#",
+            "Python",
+          ].map((s) => (
+            <li key={s}>{s}</li>
           ))}
-        </div>
+        </ul>
       </Section>
 
-      <Section title="Soft Skills">
+      <Section title="Leadership">
         <ul className="space-y-1 text-gray-600">
           {[
-            "Technical documentation",
+            "Cross-Org Technical Strategy",
             "Cross-Functional Collaboration",
-            "Cross-Org Communication",
-            "Security Best Practices",
-            "Data Governance",
+            "Technical Mentorship",
+            "Architecture Reviews",
+            "Engineering Culture",
+            "Knowledge Sharing",
           ].map((s) => (
             <li key={s}>{s}</li>
           ))}
@@ -104,7 +113,7 @@ function LeftColumn() {
 
       <Section title="Interests">
         <ul className="space-y-1 text-gray-600">
-          {["Side projects", "Guitar", "Construction", "Rock climbing"].map((s) => (
+          {["Rock climbing", "Construction", "Guitar"].map((s) => (
             <li key={s}>{s}</li>
           ))}
         </ul>
@@ -118,23 +127,10 @@ function RightColumn() {
     <div className="flex-1 space-y-6 min-w-0">
       <Experience />
 
-      <Section title="Achievements">
-        <div className="space-y-3">
-          <Achievement
-            title="Copilot for All"
-            description="Expanded the Copilot user base by 10x by adding support for unlicensed business users and licensed consumer users. Predicting 80M new licenses from this effort representing $28B/year."
-          />
-          <Achievement
-            title="Knowledge Sharing Series"
-            description="Led organization-wide learning series covering React basics, zustand, authentication, testability, performance, transformers, and more across 55 talks. Personally presented on VectorDBs, LangChain, scorecards, and The Effective Engineer."
-          />
-        </div>
-      </Section>
-
       <Section title="Education">
         <div className="flex items-baseline justify-between">
           <div>
-            <p className="font-semibold text-gray-900">B.S. in Computer Science and Mathematical Sciences</p>
+            <p className="font-semibold text-gray-900">Dual B.S. in Computer Science and Mathematical Sciences</p>
             <p className="text-blue-500">Florida Institute of Technology</p>
           </div>
           <span className="text-gray-400 shrink-0 ml-4">09/2010 - 05/2014</span>
@@ -153,11 +149,13 @@ function Experience() {
           company="Microsoft Copilot"
           dates="01/2023 - Present"
           bullets={[
-            "Shipped Microsoft Copilot on Teams, Outlook, Windows, Bing, Office.com and the standalone site serving ~7M daily active users",
-            "Designed full stack solution for Turn 0 Prompt Suggestions which initiate ~3% of sessions",
-            "Designed and developed Teaching Moments feature serving 10+ tutorials to onboard users and upsell the paid feature set",
-            "Reduced time from commit to production from 2 weeks to 3 days by rearchitecting the deployment strategy",
-            "Serving as the Technical Lead for the Microsoft Copilot Client Platform team, responsible for reliability, user perceived latency, authentication, flighting, etc",
+            "Founding client engineer on Microsoft Copilot; built and scaled the client from zero to ~40M MAU across a desktop app, web, and embedded surfaces (Teams, Outlook, Windows, Bing)",
+            "Architected an agentic software factory platform that autonomously fights engineering debt, using eval-driven development to measure agent quality; drove the flaky-test backlog to zero and retired 100+ stale feature flags",
+            "Technical lead for the Copilot Client Platform (reliability, latency, auth, feature flagging) and advisor on agentic development across the client org",
+            "Expanded Copilot's addressable user base by 10x by enabling support for unlicensed business users and licensed consumer users. Projected to unlock tens of millions of new licenses",
+            "Cut commit-to-production lead time from 2 weeks to 3 days by re-architecting the deployment pipeline",
+            "Drove full-stack design and implementation of Prompt Suggestions and Teaching Moments, an in-product tutorial system that onboards users and upsells paid features",
+            "Ran an org-wide engineering talk series, recruiting speakers for 55+ talks; personally presented on agentic development, vector DBs, and engineering scorecards",
           ]}
         />
         <Job
@@ -165,11 +163,10 @@ function Experience() {
           company="Cortana"
           dates="01/2017 - 01/2023"
           bullets={[
-            "Developed email search and composition capabilities for the initial launch of Cortana Invoke",
-            "Incubated and scaled Play My Emails feature to over 1M monthly active users",
-            "Led team of 5 engineers through full rewrite of service powering Play My Emails feature",
-            "Improved user experience by designing custom audio streaming protocol for email readouts",
-            "Created variable playback speed feature based on feedback from user panels",
+            "Incubated and scaled 'Play My Emails' experience to over 1M MAU",
+            "Designed an audio streaming protocol replacing whole-file HTTP audio responses with streamed playback. This cut time-to-first-audio for email readouts and enabled seeking, scrubbing and variable playback speed",
+            "Led a team of 5 engineers through a full rewrite of the 'Play My Emails' service, migrating from a deprecated internal platform to Microsoft Bot Framework with no user-facing disruption",
+            "Developed email search and composition capabilities for the initial launch of the Harman Kardon Invoke",
           ]}
         />
         <Job
@@ -177,9 +174,8 @@ function Experience() {
           company="Microsoft Maps"
           dates="01/2016 - 01/2017"
           bullets={[
-            "Enhanced user experience by optimizing map icons displayed across multiple zoom levels on Bing Maps",
-            "Developed Offline Search capabilities in the Windows Map app by rearchitecting Bing's online search stack",
-            "Defined strategy for selecting which locations and businesses would be downloaded for offline search",
+            "Built offline search for the Windows Maps app, adapting Bing's online search stack to run on-device and curating the downloadable content to maximize offline recall given storage constraints",
+            "Optimized map icon layout across multiple zoom levels on Bing Maps",
           ]}
         />
         <Job
@@ -187,7 +183,7 @@ function Experience() {
           company="Bing"
           dates="06/2014 - 01/2016"
           bullets={[
-            "Enhanced user satisfaction by optimizing a classifier and a ranker in Bing Local Search stack",
+            "Optimized classifiers and rankers in Bing Local Search stack",
             "Reduced latency and business costs by developing rule-based classifier to serve head queries",
           ]}
         />
@@ -223,15 +219,6 @@ function Job({ title, company, dates, bullets }: { title: string; company: strin
           </li>
         ))}
       </ul>
-    </div>
-  );
-}
-
-function Achievement({ title, description }: { title: string; description: string }) {
-  return (
-    <div>
-      <p className="font-semibold text-gray-900">{title}</p>
-      <p className="text-gray-600 leading-snug mt-0.5">{description}</p>
     </div>
   );
 }
